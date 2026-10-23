@@ -59,3 +59,7 @@ Test SQL chỉ nhận LocalDB hoặc SQL Server loopback port 14333, base catalo
 ## Phần còn mở
 
 D3 protocol là BLOCKED như đã báo trước implementation; authorization freshness, Delete semantics, typed events/retry và domain lifecycle/outcome handlers vẫn Planned. Không sửa Entity/Fluent API/InitialCreate hoặc thêm bảng chỉ để tự chốt các điểm đó. Repository Exists/read adapters hiện có được giữ nguyên; generic repository/CRUD không phát sinh trong task database này.
+
+## CI SQL Server 2022
+
+[Run 39909224514](https://github.com/chanqua321/MedEquipSLA/actions/runs/39909224514) của commit 21fdd9a: build job và database job SUCCESS. Đã tải artifact TRX và xác minh **13 total, 13 executed, 13 passed, 0 failed/notExecuted** trên SQL Server 2022 CU27 container. Đây là SQL persistence verification trên baseline nhóm, không thay full application Compose/E2E. Test fixture và container được cleanup sau run.

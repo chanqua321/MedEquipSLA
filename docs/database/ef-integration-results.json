@@ -82,6 +82,29 @@
   "blocked": [
     "D3 fencing/abort/snapshot protocol",
     "Domain business workflows and cross-service E2E",
-    "Local Docker Engine unavailable; SQL Server 2022 CI execution pending"
-  ]
+    "Local Docker Engine unavailable; full application Compose deployment unverified"
+  ],
+  "ci": {
+    "runUrl": "https://github.com/chanqua321/MedEquipSLA/actions/runs/39909224514",
+    "testedCommit": "21fdd9a77af316cb071c64ea258428fdda6b00f7",
+    "engineImage": "mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04",
+    "counters": {
+      "total": "13",
+      "executed": "13",
+      "passed": "13",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    }
+  }
 }
