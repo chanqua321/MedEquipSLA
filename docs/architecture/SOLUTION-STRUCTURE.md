@@ -1,6 +1,6 @@
 # Solution Structure và Layered Architecture
 
-Solution [MedEquipSLA.sln](../../MedEquipSLA.sln) có **25 .NET projects**: 5 service ×4 layer =20, 2 BuildingBlocks, 2 Contracts, 1 Gateway. Web React tách riêng, không tính vào số .NET projects. `tests/database` là SQL tests, chưa có .NET test project.
+Solution [MedEquipSLA.sln](../../MedEquipSLA.sln) có **26 .NET projects**: 5 service ×4 layer =20, 2 BuildingBlocks, 2 Contracts, 1 Gateway, thêm 1 Database.IntegrationTests project. Web React tách riêng, không tính vào số .NET projects. `tests/database` là SQL suites, được .NET integration test host chạy lại trên DB cô lập; test host tham chiếu nhiều Infrastructure chỉ để verification, không phải shared runtime service.
 
 ```text
 src/Services/<Service>/

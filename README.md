@@ -93,7 +93,7 @@ infrastructure/     Bootstrap tạo DB/runtime users
 
 ## Môi trường, clone và build
 
-Native cần Git, SDK đúng `global.json`, Node 24/npm. PowerShell 7 dùng cho `.ps1`; `sqlcmd` cho SQL checks; `grpcurl` tùy chọn cho gRPC. Docker Desktop/Engine Linux containers + Compose là môi trường chung. Repo Private yêu cầu quyền truy cập.
+Native cần Git, SDK đúng `global.json`, Node 24/npm. PowerShell 7 dùng cho `.ps1`; `sqlcmd` cho SQL checks; `grpcurl` tùy chọn cho gRPC. Docker Desktop/Engine Linux containers + Compose là môi trường chung. Repo hiện Public theo yêu cầu owner; clone/read không cần đăng nhập, push cần quyền collaborator.
 
 ```sh
 git clone https://github.com/chanqua321/MedEquipSLA.git
@@ -179,7 +179,7 @@ Thông thường: cập nhật `main` → `feature/<service>-<scope>` → Conven
 
 | Phần | Thực tế |
 |---|---|
-| 25 project, layer structure, DI/config/errors | Implemented foundation |
+| 25 runtime/library projects + 1 integration test project, layers/DI/config/errors | Implemented foundation |
 | 5 DB, 47 bảng ứng dụng + 5 history | Implemented; SQL Server LocalDB đã kiểm chứng |
 | Health/Gateway/Swagger/gRPC diagnostic | Implemented transport/scaffold |
 | JWT validation / login và refresh | Middleware có / issuance, rotation Planned |
@@ -192,7 +192,7 @@ Thông thường: cập nhật `main` → `feature/<service>-<scope>` → Conven
 dotnet test MedEquipSLA.sln -c Release --no-build
 ```
 
-Hiện **không có .NET test project**; exit 0 không phải test coverage. SQL checks thực trong `tests/database/`. Xem [verification mới nhất](docs/assignment-compliance/DOCUMENTATION-VERIFICATION.md), [DB evidence](docs/database/VERIFICATION.md), [GitHub Actions](https://github.com/chanqua321/MedEquipSLA/actions). Không dùng badge PASS cố định.
+Hiện có **1 .NET integration test project**: 5 model cases và 8 SQL Server runtime cases. Runtime cases Skip/BLOCKED nếu thiếu SQLSERVER_TEST_CONNECTION; không coi skip là runtime PASS. [Hướng dẫn EF tests](tests/MedEquipSLA.Database.IntegrationTests/README.md). SQL suites độc lập vẫn ở `tests/database/`. Xem [database finalization audit](docs/database/FINALIZATION-AUDIT.md), [DB evidence](docs/database/VERIFICATION.md), [GitHub Actions](https://github.com/chanqua321/MedEquipSLA/actions). Không dùng badge PASS cố định.
 
 ## Troubleshooting
 

@@ -72,3 +72,7 @@ dotnet ef migrations script --idempotent --project src/Services/Equipment/Equipm
 ```
 
 Review các thao tác có thể mất dữ liệu trước khi apply vào môi trường có dữ liệu. Thay đổi schema cần cập nhật ERD, schema assertions và evidence. Không thêm project reference, FK hoặc SQL JOIN sang database của service khác.
+
+## Kiểm tra migration rollback an toàn
+
+[EF integration test suite](../../tests/MedEquipSLA.Database.IntegrationTests/README.md) tự tạo DB mới theo owner, chạy InitialCreate Up → Down về 0 → Up và kiểm tra schema/SQL behavior. Chỉ cleanup DB do fixture CREATE thành công; không dùng database production hoặc rollback application DB đang có. Test base connection bắt buộc master hoặc không có catalog và chỉ chấp nhận LocalDB/loopback:14333. Không cấu hình SQLSERVER_TEST_CONNECTION thì runtime tests Skip/BLOCKED.

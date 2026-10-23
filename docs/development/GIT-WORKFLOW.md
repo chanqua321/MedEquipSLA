@@ -1,6 +1,6 @@
 # Git Branch, Commit và Pull Request
 
-Repo Private: [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA). Owner cấp quyền cho thành viên, không dùng token trong remote URL. Credential manager/SSH giữ credential ở ngoài repo.
+Repo Public (owner yêu cầu đổi visibility ngày 23/10/2026): [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA). Owner cấp quyền cho thành viên, không dùng token trong remote URL. Credential manager/SSH giữ credential ở ngoài repo.
 
 ## Clone và tạo feature branch
 

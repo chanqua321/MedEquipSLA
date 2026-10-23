@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-23",
+  "environment": "SQL Server LocalDB 2025 17.0.4025.3; compatibility 160",
+  "testProject": "MedEquipSLA.Database.IntegrationTests",
+  "counters": {
+    "total": "13",
+    "executed": "13",
+    "passed": "13",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "tests": [
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.Ef_model_matches_approved_erd_and_database_ownership(owner: \"Incident\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.Ef_model_matches_approved_erd_and_database_ownership(owner: \"Identity\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.InitialCreate_schema_constraints_rollback_and_reapply_are_valid(owner: \"Maintenance\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.EfPersistenceTests.Ef_throws_concurrency_exception_for_stale_rowversion",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.EfPersistenceTests.Failed_outbox_constraint_rolls_back_other_changes_in_SaveChanges",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.Ef_model_matches_approved_erd_and_database_ownership(owner: \"Notification\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.InitialCreate_schema_constraints_rollback_and_reapply_are_valid(owner: \"Incident\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.InitialCreate_schema_constraints_rollback_and_reapply_are_valid(owner: \"Identity\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.Ef_model_matches_approved_erd_and_database_ownership(owner: \"Maintenance\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.EfPersistenceTests.Ef_transaction_rolls_back_aggregate_and_outbox_together",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.InitialCreate_schema_constraints_rollback_and_reapply_are_valid(owner: \"Equipment\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.Ef_model_matches_approved_erd_and_database_ownership(owner: \"Equipment\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "MedEquipSLA.Database.IntegrationTests.SchemaAndMigrationTests.InitialCreate_schema_constraints_rollback_and_reapply_are_valid(owner: \"Notification\")",
+      "outcome": "Passed"
+    }
+  ],
+  "migrationCycles": "5 owners: Up -> 0 -> Up; schema/behavior suites before and after rollback",
+  "indexVerification": "74 non-PK indexes: name, key order, uniqueness, filter",
+  "checkConstraints": "87: identity/count, enabled/trusted; negative SQL behavior suites",
+  "productionDatabasesModified": false,
+  "leftoverTestDatabases": 0,
+  "blocked": [
+    "D3 fencing/abort/snapshot protocol",
+    "Domain business workflows and cross-service E2E",
+    "Local Docker Engine unavailable; SQL Server 2022 CI execution pending"
+  ]
+}

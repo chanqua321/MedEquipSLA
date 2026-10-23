@@ -13,6 +13,8 @@ Ngày audit 23/10/2026. Có **5 SQL Server database, 47 bảng ứng dụng và 
 
 Không đổi BR gốc thành Approved chỉ vì database đã tạo. Schema tương lai cần sửa ERD, review và migration tên mới; không chỉnh lại baseline đã apply vào môi trường có dữ liệu.
 
+[Finalization audit](database/FINALIZATION-AUDIT.md) và [BR D1–D4](business/BUSINESS-RULES-D1-D4-APPROVED.md) bổ sung EF model/migration rollback/SQL tests; không sinh trùng InitialCreate hoặc đổi ERD.
+
 ## 2. Database ownership matrix
 
 | Owner / DbContext | Database | Nghiệp vụ/Identity | Kỹ thuật cục bộ | Tổng ứng dụng | Cả history |
@@ -144,3 +146,5 @@ Chỉ seed ba role ổn định Admin/Technician/DepartmentStaff bằng HasData 
 Đã áp dụng 5 migration từ DB rỗng, chạy lại SQL idempotent/wrapper, kiểm tra no pending model changes. Mười SQL suites đối chiếu 515 cột/type/nullability/PK/FK và thử unique/check/rowversion; fixtures rollback. Chạy `pwsh ./scripts/Test-Databases.ps1` cho LocalDB; SQL authentication theo SETUP dùng SQLCMDPASSWORD, không `-P` trên command line.
 
 Docker SQL Server 2022/credentials isolation và full-stack E2E còn chưa xác minh do Engine unavailable. LocalDB compatibility 160 không chứng minh engine 2022 đã chạy. [Evidence DB](database/VERIFICATION.md), [audit tài liệu](assignment-compliance/DOCUMENTATION-VERIFICATION.md), [PRN232 matrix](assignment-compliance/PRN232-CHECKLIST.md).
+
+EF integration tests hiện có 5 model + 8 SQL runtime cases; xem [test README](../tests/MedEquipSLA.Database.IntegrationTests/README.md). Các case migration rollback chỉ dùng database mới do fixture tạo, không rollback năm application DB. Kết quả runtime cụ thể ở finalization audit.

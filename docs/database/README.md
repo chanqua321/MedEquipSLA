@@ -12,3 +12,5 @@ Nguồn tổng quan là [DATABASE-DOCUMENTATION](../DATABASE-DOCUMENTATION.md); 
 - [Setup và migrations](SETUP.md), [SQL exports](migrations/), [SQL verification](VERIFICATION.md).
 
 47 bảng ứng dụng + 5 history đã tồn tại trên SQL Server LocalDB trong lần kiểm chứng. Compose SQL Server 2022 chưa được chạy thực; không coi schema implement là workflow đã implement. Renderer `render.cjs` chỉ sinh ảnh từ JSON, không kết nối SQL hoặc chạy migration; dùng dependency theo ghi chú đầu file nếu cần vẽ lại, không commit node_modules.
+
+[Finalization audit](FINALIZATION-AUDIT.md) và [EF tests](../../tests/MedEquipSLA.Database.IntegrationTests/README.md) kiểm chứng migration rollback/reapply trên DB mới riêng.
