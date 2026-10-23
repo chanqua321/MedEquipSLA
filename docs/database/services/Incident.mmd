@@ -1,0 +1,73 @@
+erDiagram
+    SlaPolicies {
+        Guid Id PK "required"
+        string Priority UK "required"
+        string Name "required"
+        bool IsEnabled "required"
+        DateTimeOffset CreatedAtUtc "required"
+        DateTimeOffset UpdatedAtUtc "required"
+        Guid CreatedByUserId "optional; logical reference, no FK"
+        Guid UpdatedByUserId "optional; logical reference, no FK"
+        bytes RowVersion "required"
+    }
+    SlaPolicyVersions {
+        Guid SlaPolicyId PK,FK "required"
+        int Version PK "required"
+        int ResponseDurationMinutes "required"
+        int ResolutionDurationMinutes "required"
+        DateTimeOffset EffectiveFromUtc "required"
+        DateTimeOffset EffectiveToUtc "optional"
+        Guid CreatedByUserId "required; logical reference, no FK"
+        DateTimeOffset CreatedAtUtc "required"
+    }
+    Incidents {
+        Guid Id PK "required"
+        string Code UK "required"
+        Guid EquipmentId "required; logical reference, no FK"
+        Guid DepartmentIdSnapshot "required; logical reference, no FK"
+        Guid AssignedTechnicianId "optional; logical reference, no FK"
+        string Status "required"
+        Guid SlaPolicyId FK "required"
+        int SlaPolicyVersion FK "required"
+        DateTimeOffset ResponseDeadlineAtUtc "required"
+        DateTimeOffset ResolutionDeadlineAtUtc "required"
+        string ResolutionOutcome "required"
+        bytes RowVersion "required"
+    }
+    ResolutionAttempts {
+        Guid Id PK "required"
+        Guid IncidentId FK,UK "required"
+        int AttemptNumber UK "required"
+        Guid PerformedByUserId "required; logical reference, no FK"
+        string ResolutionNotes "required"
+        string ResultSummary "required"
+        DateTimeOffset CompletedAtUtc "required"
+        string ReviewDecision "required"
+        Guid ReviewedByUserId "optional; logical reference, no FK"
+        DateTimeOffset ReviewedAtUtc "optional"
+        string ReviewReason "optional"
+        bytes RowVersion "required"
+    }
+    IncidentActivities {
+        Guid Id PK "required"
+        Guid IncidentId FK "required"
+        string Action "required"
+        string FromStatus "optional"
+        string ToStatus "optional"
+        Guid ActorUserId "required; logical reference, no FK"
+        DateTimeOffset OccurredAtUtc "required"
+    }
+    SlaDeadlineAlerts {
+        Guid Id PK "required"
+        Guid IncidentId FK,UK "required"
+        string AlertKind UK "required"
+        DateTimeOffset DeadlineAtUtc "required"
+        DateTimeOffset DetectedAtUtc "required"
+        Guid EventId UK "required"
+    }
+    SlaPolicies ||--o{ SlaPolicyVersions : "SlaPolicyId"
+    SlaPolicyVersions ||--o{ Incidents : "SlaPolicyId,SlaPolicyVersion"
+    Incidents o|--o{ Incidents : "RelatedIncidentId"
+    Incidents ||--o{ ResolutionAttempts : "IncidentId"
+    Incidents ||--o{ IncidentActivities : "IncidentId"
+    Incidents ||--o{ SlaDeadlineAlerts : "IncidentId"

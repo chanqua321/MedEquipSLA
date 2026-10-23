@@ -1,0 +1,3903 @@
+{
+  "status": "APPROVED_FOR_IMPLEMENTATION",
+  "version": "0.1",
+  "date": "2026-10-23",
+  "schemas": [
+    {
+      "service": "Identity",
+      "database": "MedEquip_Identity",
+      "tables": [
+        {
+          "name": "AspNetUsers",
+          "purpose": "Tài khoản nguồn, quyền hiện hành và AuthorizationVersion.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UserName",
+              "type": "nvarchar(256)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "NormalizedUserName",
+              "type": "nvarchar(256)",
+              "key": "UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Email",
+              "type": "nvarchar(256)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "NormalizedEmail",
+              "type": "nvarchar(256)",
+              "key": "UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "EmailConfirmed",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "PasswordHash",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "SecurityStamp",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ConcurrencyStamp",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "PhoneNumber",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "PhoneNumberConfirmed",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "TwoFactorEnabled",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "LockoutEnd",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LockoutEnabled",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AccessFailedCount",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FullName",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": "Equipment.Department; Staff bắt buộc có khoa active."
+            },
+            {
+              "name": "DepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "IsActive",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AuthorizationVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "Filtered unique NormalizedUserName và NormalizedEmail khi khác NULL; login email là bắt buộc ở application boundary.",
+            "AuthorizationVersion >= 1; thay role/khoa/IsActive, tăng version và revoke refresh tokens cùng local transaction."
+          ],
+          "show": [
+            "Id",
+            "FullName",
+            "NormalizedEmail",
+            "DepartmentId",
+            "IsActive",
+            "AuthorizationVersion",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "AspNetRoles",
+          "purpose": "Ba vai trò Admin / Technician / DepartmentStaff.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(256)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "NormalizedName",
+              "type": "nvarchar(256)",
+              "key": "UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ConcurrencyStamp",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [],
+          "show": [
+            "Id",
+            "Name",
+            "NormalizedName",
+            "ConcurrencyStamp"
+          ]
+        },
+        {
+          "name": "AspNetUserRoles",
+          "purpose": "Nhiều-nhiều giữa user và role, theo ASP.NET Core Identity.",
+          "columns": [
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "PK,FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RoleId",
+              "type": "uniqueidentifier",
+              "key": "PK,FK",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetUsers",
+              "childColumns": [
+                "UserId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            },
+            {
+              "parent": "AspNetRoles",
+              "childColumns": [
+                "RoleId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "PK(UserId,RoleId). Ma trận role kết hợp phải được duyệt; quyền resource do application policy kiểm tra."
+          ],
+          "show": [
+            "UserId",
+            "RoleId"
+          ]
+        },
+        {
+          "name": "AspNetUserClaims",
+          "purpose": "Claims bổ sung của user.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "int",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ClaimType",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ClaimValue",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetUsers",
+              "childColumns": [
+                "UserId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [],
+          "show": [
+            "Id",
+            "UserId",
+            "ClaimType",
+            "ClaimValue"
+          ]
+        },
+        {
+          "name": "AspNetRoleClaims",
+          "purpose": "Claims gắn với role.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "int",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RoleId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ClaimType",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ClaimValue",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetRoles",
+              "childColumns": [
+                "RoleId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [],
+          "show": [
+            "Id",
+            "RoleId",
+            "ClaimType",
+            "ClaimValue"
+          ]
+        },
+        {
+          "name": "AspNetUserLogins",
+          "purpose": "Bảng chuẩn Identity, dự phòng external-login; không có external provider trong MVP.",
+          "columns": [
+            {
+              "name": "LoginProvider",
+              "type": "nvarchar(128)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ProviderKey",
+              "type": "nvarchar(128)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ProviderDisplayName",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetUsers",
+              "childColumns": [
+                "UserId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [],
+          "show": [
+            "LoginProvider",
+            "ProviderKey",
+            "ProviderDisplayName",
+            "UserId"
+          ]
+        },
+        {
+          "name": "AspNetUserTokens",
+          "purpose": "Token store chuẩn Identity; không lưu JWT access/refresh token thô.",
+          "columns": [
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "PK,FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "LoginProvider",
+              "type": "nvarchar(128)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(128)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Value",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetUsers",
+              "childColumns": [
+                "UserId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [],
+          "show": [
+            "UserId",
+            "LoginProvider",
+            "Name",
+            "Value"
+          ]
+        },
+        {
+          "name": "RefreshTokens",
+          "purpose": "Refresh token hash, rotation và phát hiện reuse theo family.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "TokenHash",
+              "type": "binary(32)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FamilyId",
+              "type": "uniqueidentifier",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IssuedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ExpiresAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RevokedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReplacedByTokenId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RevocationReason",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "AspNetUsers",
+              "childColumns": [
+                "UserId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            },
+            {
+              "parent": "RefreshTokens",
+              "childColumns": [
+                "ReplacedByTokenId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": true,
+              "one": true
+            }
+          ],
+          "rules": [
+            "Unique TokenHash; index(UserId,FamilyId), (UserId,ExpiresAtUtc).",
+            "ExpiresAtUtc > IssuedAtUtc. ReplacedByTokenId khác Id và phải cùng UserId/FamilyId (application).",
+            "Filtered unique ReplacedByTokenId khi khác NULL; một successor chỉ thay thế tối đa một token cũ."
+          ],
+          "show": [
+            "Id",
+            "UserId",
+            "TokenHash",
+            "FamilyId",
+            "ExpiresAtUtc",
+            "RevokedAtUtc",
+            "ReplacedByTokenId"
+          ]
+        }
+      ]
+    },
+    {
+      "service": "Equipment",
+      "database": "MedEquip_Equipment",
+      "tables": [
+        {
+          "name": "Departments",
+          "purpose": "Khoa/phòng nguồn, chỉ Equipment sở hữu.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Code",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IsActive",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "Unique Code; không hard-delete nếu có thiết bị/tham chiếu lịch sử. Inactive chặn phân khoa/thiết bị mới."
+          ],
+          "show": [
+            "Id",
+            "Code",
+            "Name",
+            "IsActive",
+            "CreatedAtUtc",
+            "UpdatedAtUtc",
+            "CreatedByUserId",
+            "UpdatedByUserId",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EquipmentCategories",
+          "purpose": "Danh mục loại thiết bị.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Code",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Description",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "IsActive",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [],
+          "show": [
+            "Id",
+            "Code",
+            "Name",
+            "Description",
+            "IsActive",
+            "CreatedAtUtc",
+            "UpdatedAtUtc",
+            "CreatedByUserId",
+            "UpdatedByUserId",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EquipmentAssets",
+          "purpose": "Thiết bị và trạng thái chính thức; chỉ service này được thay đổi.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AssetCode",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SerialNumber",
+              "type": "nvarchar(100)",
+              "key": "UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CategoryId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Manufacturer",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Model",
+              "type": "nvarchar(100)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "PurchasedOn",
+              "type": "date",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "WarrantyUntil",
+              "type": "date",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "IsRetired",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "OperationalStatus",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RetiredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RetiredByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RetirementReason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "AggregateVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "Departments",
+              "childColumns": [
+                "DepartmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            },
+            {
+              "parent": "EquipmentCategories",
+              "childColumns": [
+                "CategoryId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique AssetCode; filtered unique SerialNumber khi khác NULL. Index(DepartmentId,OperationalStatus,Id).",
+            "OperationalStatus ∈ Operational,UnderMaintenance,Broken,Retired; IsRetired phải khớp Retired (check).",
+            "Version >= 1; Retired terminal; trạng thái tính bằng serialized local transaction, không cho client tự set."
+          ],
+          "show": [
+            "Id",
+            "AssetCode",
+            "Name",
+            "CategoryId",
+            "DepartmentId",
+            "OperationalStatus",
+            "IsRetired",
+            "AggregateVersion",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EquipmentStateProjections",
+          "purpose": "Trạng thái các Incident/WorkOrder ảnh hưởng thiết bị, đồng bộ qua event.",
+          "columns": [
+            {
+              "name": "SourceService",
+              "type": "nvarchar(30)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceAggregateId",
+              "type": "uniqueidentifier",
+              "key": "PK,REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceStatus",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IsBlocking",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "LastEventId",
+              "type": "uniqueidentifier",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "LastOccurredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AppliedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "EquipmentAssets",
+              "childColumns": [
+                "EquipmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "PK(SourceService,SourceAggregateId); index(EquipmentId,IsBlocking).",
+            "SourceAggregateId là ID ngoài DB, không phải FK. SourceVersion tăng theo cùng aggregate, event cũ không ghi đè."
+          ],
+          "show": [
+            "SourceService",
+            "SourceAggregateId",
+            "EquipmentId",
+            "SourceStatus",
+            "IsBlocking",
+            "SourceVersion",
+            "LastEventId",
+            "LastOccurredAtUtc",
+            "AppliedAtUtc",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EquipmentUseRegistrations",
+          "purpose": "ĐỀ XUẤT D3: đăng ký sử dụng thiết bị bền để chặn race với Retire.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceService",
+              "type": "nvarchar(30)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResourceType",
+              "type": "nvarchar(30)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResourceId",
+              "type": "uniqueidentifier",
+              "key": "UK,REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceOperationId",
+              "type": "uniqueidentifier",
+              "key": "UK,REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "State",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RegisteredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ConfirmedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReleasedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LastVerifiedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "EquipmentAssets",
+              "childColumns": [
+                "EquipmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(SourceService,ResourceType,ResourceId), unique(SourceService,SourceOperationId).",
+            "State Pending/Active/Released/Aborted. Pending/Active chặn Retire; không tự release theo TTL.",
+            "Register và Retire serialize trên cùng Equipment row; operation abort cần tombstone bền ở service nguồn."
+          ],
+          "show": [
+            "Id",
+            "EquipmentId",
+            "SourceService",
+            "ResourceType",
+            "ResourceId",
+            "SourceOperationId",
+            "State",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EquipmentStatusHistories",
+          "purpose": "Lịch sử chuyển trạng thái, retire và chuyển khoa.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ChangeKind",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FromStatus",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToStatus",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "FromDepartmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToDepartmentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "FromDepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToDepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Reason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ActorUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "SourceEventId",
+              "type": "uniqueidentifier",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ChangedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "EquipmentAssets",
+              "childColumns": [
+                "EquipmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            },
+            {
+              "parent": "Departments",
+              "childColumns": [
+                "FromDepartmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": true,
+              "one": false
+            },
+            {
+              "parent": "Departments",
+              "childColumns": [
+                "ToDepartmentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": true,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Index(EquipmentId,ChangedAtUtc,Id). SourceEventId filtered unique khi khác NULL.",
+            "FK khoa là nội bộ Equipment; giữ snapshots để tên khoa lịch sử không đổi."
+          ],
+          "show": [
+            "Id",
+            "EquipmentId",
+            "ChangeKind",
+            "FromStatus",
+            "ToStatus",
+            "FromDepartmentId",
+            "ToDepartmentId",
+            "ChangedAtUtc"
+          ]
+        },
+        {
+          "name": "ReconciliationCheckpoints",
+          "purpose": "ĐỀ XUẤT D3: checkpoint đối soát service nguồn; không chứa dữ liệu nghiệp vụ dùng chung.",
+          "columns": [
+            {
+              "name": "SourceService",
+              "type": "nvarchar(30)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SnapshotId",
+              "type": "uniqueidentifier",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "SnapshotWatermark",
+              "type": "nvarchar(256)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Cursor",
+              "type": "nvarchar(512)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "State",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "StartedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LastCompletedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LastError",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "SourceService chỉ Incident/Maintenance. Không xóa blocking từ snapshot phân trang chưa hoàn tất."
+          ],
+          "show": [
+            "SourceService",
+            "SnapshotId",
+            "SnapshotWatermark",
+            "Cursor",
+            "State",
+            "StartedAtUtc",
+            "LastCompletedAtUtc",
+            "LastError",
+            "RowVersion"
+          ]
+        }
+      ]
+    },
+    {
+      "service": "Maintenance",
+      "database": "MedEquip_Maintenance",
+      "tables": [
+        {
+          "name": "MaintenanceSchedules",
+          "purpose": "Lịch định kỳ theo lịch gốc, không trượt theo thời điểm job chạy.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Code",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentCodeSnapshot",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentIdSnapshot",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "WorkType",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AnchorAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IntervalDays",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "NextOccurrenceAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReminderLeadMinutes",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CompletionWindowMinutes",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IsActive",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentUseRegistrationId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AggregateVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "IntervalDays > 0; ReminderLeadMinutes >= 0; CompletionWindowMinutes >= 0.",
+            "D2 ĐÃ DUYỆT: sinh occurrence trước ReminderLeadMinutes, tạo WO khi đến kỳ. Mốc overdue = occurrence + CompletionWindowMinutes, mặc định 0 đã duyệt."
+          ],
+          "show": [
+            "Id",
+            "Code",
+            "EquipmentId",
+            "DepartmentIdSnapshot",
+            "WorkType",
+            "IntervalDays",
+            "NextOccurrenceAtUtc",
+            "IsActive",
+            "EquipmentUseRegistrationId"
+          ]
+        },
+        {
+          "name": "ScheduleOccurrences",
+          "purpose": "D2 ĐÃ DUYỆT: một kỳ cụ thể, có thể tồn tại trước WorkOrder.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ScheduleId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ScheduledOccurrenceAtUtc",
+              "type": "datetimeoffset",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DueAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "State",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CancelledAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "MaintenanceSchedules",
+              "childColumns": [
+                "ScheduleId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(ScheduleId,ScheduledOccurrenceAtUtc); DueAtUtc >= ScheduledOccurrenceAtUtc.",
+            "Planned/WorkOrderCreated/Cancelled; không xóa hoặc đổi timestamp kỳ đã có lịch sử."
+          ],
+          "show": [
+            "Id",
+            "ScheduleId",
+            "ScheduledOccurrenceAtUtc",
+            "DueAtUtc",
+            "State",
+            "CreatedAtUtc",
+            "CancelledAtUtc",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "WorkOrders",
+          "purpose": "Công việc bảo trì/hiệu chuẩn và nghiệm thu.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Code",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "OccurrenceId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentCodeSnapshot",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentIdSnapshot",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "WorkType",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Status",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AssignedTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ScheduledForUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DueAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "StartedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ClosedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CancelledAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CancellationReason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "IsBlocking",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentUseRegistrationId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AggregateVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "ScheduleOccurrences",
+              "childColumns": [
+                "OccurrenceId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": true,
+              "one": true
+            }
+          ],
+          "rules": [
+            "Filtered unique OccurrenceId khi khác NULL; manual WO không có occurrence. Index(Status,DueAtUtc,Id), (AssignedTechnicianId,Status).",
+            "Scheduled -> InProgress -> Completed -> Closed; Completed có thể trả InProgress. Assignment là metadata, không phải Assigned status.",
+            "ĐỀ XUẤT D4: chỉ cancel trực tiếp khi Scheduled; calibration failed không Close/release blocking cho đến rework đạt."
+          ],
+          "show": [
+            "Id",
+            "Code",
+            "OccurrenceId",
+            "EquipmentId",
+            "AssignedTechnicianId",
+            "Status",
+            "DueAtUtc",
+            "IsBlocking",
+            "EquipmentUseRegistrationId",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "WorkOrderAttempts",
+          "purpose": "Mỗi lần Completed và quyết định nghiệm thu, không ghi đè kết quả bị trả lại.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "WorkOrderId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AttemptNumber",
+              "type": "int",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "PerformedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CompletedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResultStatus",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Notes",
+              "type": "nvarchar(4000)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Cost",
+              "type": "decimal(18,2)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CurrencyCode",
+              "type": "char(3)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReviewDecision",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReviewedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReviewedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReviewReason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "WorkOrders",
+              "childColumns": [
+                "WorkOrderId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(WorkOrderId,AttemptNumber); filtered unique WorkOrderId WHERE ReviewDecision=Accepted.",
+            "AttemptNumber > 0, Cost >= 0; Review Pending/Accepted/Rejected; accepted/rejected cần actor+time, rejected cần lý do.",
+            "CompletedAtUtc do backend tạo; hiệu chuẩn cần measurements; từng attempt giữ bất biến sau review."
+          ],
+          "show": [
+            "Id",
+            "WorkOrderId",
+            "AttemptNumber",
+            "PerformedByUserId",
+            "CompletedAtUtc",
+            "ResultStatus",
+            "ReviewDecision",
+            "ReviewedAtUtc"
+          ]
+        },
+        {
+          "name": "CalibrationMeasurements",
+          "purpose": "Kết quả đo theo từng lần thực hiện hiệu chuẩn.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "WorkOrderAttemptId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ParameterCode",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ParameterName",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Unit",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "MeasuredValue",
+              "type": "decimal(18,6)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "MinimumAllowed",
+              "type": "decimal(18,6)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "MaximumAllowed",
+              "type": "decimal(18,6)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Passed",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "WorkOrderAttempts",
+              "childColumns": [
+                "WorkOrderAttemptId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(WorkOrderAttemptId,ParameterCode). Có ít nhất một ngưỡng; min <= max nếu đủ hai ngưỡng.",
+            "Passed tính bởi backend từ ngưỡng; không cho client tự xác nhận đạt."
+          ],
+          "show": [
+            "Id",
+            "WorkOrderAttemptId",
+            "ParameterCode",
+            "ParameterName",
+            "Unit",
+            "MeasuredValue",
+            "MinimumAllowed",
+            "MaximumAllowed",
+            "Passed"
+          ]
+        },
+        {
+          "name": "OccurrenceReminders",
+          "purpose": "Nhắc theo kỳ; không phụ thuộc WorkOrder chưa tồn tại.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "OccurrenceId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReminderKind",
+              "type": "nvarchar(20)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EventId",
+              "type": "uniqueidentifier",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "TriggeredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "ScheduleOccurrences",
+              "childColumns": [
+                "OccurrenceId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(OccurrenceId,ReminderKind); ReminderKind DueSoon/Overdue. Cùng transaction reminder + Outbox, không có EmailSent flag."
+          ],
+          "show": [
+            "Id",
+            "OccurrenceId",
+            "ReminderKind",
+            "EventId",
+            "TriggeredAtUtc"
+          ]
+        },
+        {
+          "name": "WorkOrderActivities",
+          "purpose": "Audit timeline nghiệp vụ: phân công, bắt đầu, complete, review, cancel.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "WorkOrderId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Action",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FromStatus",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToStatus",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "FromTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ActorUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Reason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "OccurredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "WorkOrders",
+              "childColumns": [
+                "WorkOrderId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Append-only; index(WorkOrderId,OccurredAtUtc,Id)."
+          ],
+          "show": [
+            "Id",
+            "WorkOrderId",
+            "Action",
+            "FromStatus",
+            "ToStatus",
+            "ActorUserId",
+            "OccurredAtUtc"
+          ]
+        }
+      ]
+    },
+    {
+      "service": "Incident",
+      "database": "MedEquip_Incident",
+      "tables": [
+        {
+          "name": "SlaPolicies",
+          "purpose": "Danh mục chính sách theo Priority, không ghi đè version.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Priority",
+              "type": "nvarchar(20)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Name",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IsEnabled",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "Priority Critical/High/Medium/Low, unique. IsEnabled không thay cho effective-date logic."
+          ],
+          "show": [
+            "Id",
+            "Priority",
+            "Name",
+            "IsEnabled",
+            "CreatedAtUtc",
+            "UpdatedAtUtc",
+            "CreatedByUserId",
+            "UpdatedByUserId",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "SlaPolicyVersions",
+          "purpose": "Phiên bản chính sách và khoảng hiệu lực.",
+          "columns": [
+            {
+              "name": "SlaPolicyId",
+              "type": "uniqueidentifier",
+              "key": "PK,FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Version",
+              "type": "int",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResponseDurationMinutes",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResolutionDurationMinutes",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EffectiveFromUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EffectiveToUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "SlaPolicies",
+              "childColumns": [
+                "SlaPolicyId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "PK(SlaPolicyId,Version); unique(SlaPolicyId,EffectiveFromUtc). Durations > 0, resolution >= response, EffectiveTo > EffectiveFrom.",
+            "Không overlap effective intervals theo một policy: application serialize trên SlaPolicy row; CHECK/unique đơn thuần không chứng minh invariant này.",
+            "Không sửa durations của version đã áp dụng; kết thúc interval có audit."
+          ],
+          "show": [
+            "SlaPolicyId",
+            "Version",
+            "ResponseDurationMinutes",
+            "ResolutionDurationMinutes",
+            "EffectiveFromUtc",
+            "EffectiveToUtc",
+            "CreatedByUserId",
+            "CreatedAtUtc"
+          ]
+        },
+        {
+          "name": "Incidents",
+          "purpose": "Hồ sơ sự cố, quyền theo snapshot khoa, SLA snapshot và kết quả cuối.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Code",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentCodeSnapshot",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentIdSnapshot",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentNameSnapshot",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Title",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Description",
+              "type": "nvarchar(4000)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReportedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AssignedTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RelatedIncidentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Priority",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Status",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SlaPolicyId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SlaPolicyVersion",
+              "type": "int",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SlaPrioritySnapshot",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResponseDurationMinutesSnapshot",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResolutionDurationMinutesSnapshot",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResponseDeadlineAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResolutionDeadlineAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FirstRespondedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ClosedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ResponseOutcome",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResolutionOutcome",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SlaFinalizedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "EquipmentUseRegistrationId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AggregateVersion",
+              "type": "bigint",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CreatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "SlaPolicyVersions",
+              "childColumns": [
+                "SlaPolicyId",
+                "SlaPolicyVersion"
+              ],
+              "parentColumns": [
+                "SlaPolicyId",
+                "Version"
+              ],
+              "optional": false,
+              "one": false
+            },
+            {
+              "parent": "Incidents",
+              "childColumns": [
+                "RelatedIncidentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": true,
+              "one": false
+            }
+          ],
+          "rules": [
+            "RelatedIncidentId != Id, phải cùng EquipmentId (application). Không hard-delete hoặc reopen Closed.",
+            "Index(DepartmentIdSnapshot,CreatedAtUtc,Id), (Status,ResponseDeadlineAtUtc), (Status,ResolutionDeadlineAtUtc), (AssignedTechnicianId,Status).",
+            "Status Open/InProgress/Resolved/Closed; assignment không đổi Status. Snapshot giữ nguyên khi policy/priority hiển thị thay đổi.",
+            "ĐỀ XUẤT D1: kết quả Resolution dùng CompletedAtUtc của attempt Accepted; ReviewedAtUtc/ClosedAtUtc tách riêng. Outcome cuối chỉ khóa khi Closed."
+          ],
+          "show": [
+            "Id",
+            "Code",
+            "EquipmentId",
+            "DepartmentIdSnapshot",
+            "Status",
+            "AssignedTechnicianId",
+            "SlaPolicyId",
+            "SlaPolicyVersion",
+            "ResponseDeadlineAtUtc",
+            "ResolutionDeadlineAtUtc",
+            "ResolutionOutcome",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "ResolutionAttempts",
+          "purpose": "Mỗi lần Resolve và quyết định nghiệm thu; giữ lịch sử bị trả lại.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IncidentId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AttemptNumber",
+              "type": "int",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "PerformedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResolutionNotes",
+              "type": "nvarchar(4000)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResultSummary",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "CompletedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReviewDecision",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReviewedByUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReviewedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ReviewReason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "Incidents",
+              "childColumns": [
+                "IncidentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(IncidentId,AttemptNumber), filtered unique IncidentId WHERE ReviewDecision=Accepted.",
+            "Không cần AcceptedAttemptId FK ngược: accepted attempt xác định bằng unique index, tránh vòng FK. Chỉ Closed khi có một attempt Accepted (application transaction).",
+            "Rejected giữ nguyên CompletedAtUtc và FirstRespondedAtUtc của Incident; backend tạo timestamp."
+          ],
+          "show": [
+            "Id",
+            "IncidentId",
+            "AttemptNumber",
+            "PerformedByUserId",
+            "ResolutionNotes",
+            "ResultSummary",
+            "CompletedAtUtc",
+            "ReviewDecision",
+            "ReviewedByUserId",
+            "ReviewedAtUtc",
+            "ReviewReason",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "IncidentActivities",
+          "purpose": "Timeline trạng thái, phân công lại, đổi priority, review.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IncidentId",
+              "type": "uniqueidentifier",
+              "key": "FK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Action",
+              "type": "nvarchar(50)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FromStatus",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToStatus",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "FromTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ToTechnicianId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ActorUserId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Reason",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "OccurredAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "Incidents",
+              "childColumns": [
+                "IncidentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Append-only; index(IncidentId,OccurredAtUtc,Id). Ghi cùng transaction thay đổi."
+          ],
+          "show": [
+            "Id",
+            "IncidentId",
+            "Action",
+            "FromStatus",
+            "ToStatus",
+            "ActorUserId",
+            "OccurredAtUtc"
+          ]
+        },
+        {
+          "name": "SlaDeadlineAlerts",
+          "purpose": "Cảnh báo khi quá hạn; không đánh đồng với final SLA outcome.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "IncidentId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AlertKind",
+              "type": "nvarchar(20)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DeadlineAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DetectedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EventId",
+              "type": "uniqueidentifier",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "Incidents",
+              "childColumns": [
+                "IncidentId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(IncidentId,AlertKind), AlertKind Response/Resolution; deadline snapshot bất biến.",
+            "Cảnh báo tạm tính chỉ phát một business EventId/loại; duplicate transport do Inbox xử lý. Final result lấy từ Incident + attempt Accepted, không suy ra chỉ từ tồn tại alert."
+          ],
+          "show": [
+            "Id",
+            "IncidentId",
+            "AlertKind",
+            "DeadlineAtUtc",
+            "DetectedAtUtc",
+            "EventId"
+          ]
+        }
+      ]
+    },
+    {
+      "service": "Notification",
+      "database": "MedEquip_Notification",
+      "tables": [
+        {
+          "name": "Notifications",
+          "purpose": "Thông báo in-app bền, phạm vi cá nhân và snapshot khoa.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RecipientUserId",
+              "type": "uniqueidentifier",
+              "key": "REF,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SourceEventId",
+              "type": "uniqueidentifier",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Kind",
+              "type": "nvarchar(50)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Title",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Body",
+              "type": "nvarchar(4000)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResourceType",
+              "type": "nvarchar(30)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ResourceId",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "DepartmentIdSnapshot",
+              "type": "uniqueidentifier",
+              "key": "REF",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ReadAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "Unique(SourceEventId,RecipientUserId,Kind), index(RecipientUserId,ReadAtUtc,CreatedAtUtc,Id).",
+            "JWT sub + quyền khoa hiện hành được kiểm tra ở backend; resource IDs không tạo FK sang service khác."
+          ],
+          "show": [
+            "Id",
+            "RecipientUserId",
+            "SourceEventId",
+            "Kind",
+            "Title",
+            "Body",
+            "ResourceType",
+            "ResourceId",
+            "DepartmentIdSnapshot",
+            "CreatedAtUtc",
+            "ReadAtUtc",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "NotificationPreferences",
+          "purpose": "Tùy chọn theo người nhận và loại thông báo.",
+          "columns": [
+            {
+              "name": "UserId",
+              "type": "uniqueidentifier",
+              "key": "PK,REF",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "NotificationKind",
+              "type": "nvarchar(50)",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "InAppEnabled",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EmailEnabled",
+              "type": "bit",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "UpdatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [],
+          "rules": [
+            "Critical/assignment/SLA policy không được silently drop in-app chỉ vì preference; chính sách bắt buộc do server áp dụng."
+          ],
+          "show": [
+            "UserId",
+            "NotificationKind",
+            "InAppEnabled",
+            "EmailEnabled",
+            "UpdatedAtUtc",
+            "RowVersion"
+          ]
+        },
+        {
+          "name": "EmailDeliveries",
+          "purpose": "Hàng đợi SMTP có lease/retry; 0 hoặc 1 email cho một notification.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "NotificationId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "ToAddressSnapshot",
+              "type": "nvarchar(256)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Subject",
+              "type": "nvarchar(200)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Body",
+              "type": "nvarchar(max)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "MessageId",
+              "type": "nvarchar(200)",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "Status",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AttemptCount",
+              "type": "int",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "NextAttemptAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LeaseOwner",
+              "type": "nvarchar(100)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LeaseUntilUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "CreatedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SentAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "LastError",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "RowVersion",
+              "type": "rowversion",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "Notifications",
+              "childColumns": [
+                "NotificationId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": true
+            }
+          ],
+          "rules": [
+            "Unique NotificationId, unique MessageId; index(Status,NextAttemptAtUtc). Status Pending/Processing/Sent/Failed; AttemptCount >= 0.",
+            "Không hứa exactly-once SMTP; cùng MessageId không bảo đảm mọi mail server dedupe."
+          ],
+          "show": [
+            "Id",
+            "NotificationId",
+            "ToAddressSnapshot",
+            "MessageId",
+            "Status",
+            "AttemptCount",
+            "NextAttemptAtUtc",
+            "SentAtUtc"
+          ]
+        },
+        {
+          "name": "EmailDeliveryAttempts",
+          "purpose": "Lịch sử từng lần thử SMTP, không ghi đè lỗi cũ.",
+          "columns": [
+            {
+              "name": "Id",
+              "type": "uniqueidentifier",
+              "key": "PK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "EmailDeliveryId",
+              "type": "uniqueidentifier",
+              "key": "FK,UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "AttemptNumber",
+              "type": "int",
+              "key": "UK",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "StartedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "FinishedAtUtc",
+              "type": "datetimeoffset",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "Outcome",
+              "type": "nvarchar(20)",
+              "key": "",
+              "nullable": false,
+              "notes": ""
+            },
+            {
+              "name": "SmtpResponse",
+              "type": "nvarchar(2000)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            },
+            {
+              "name": "ErrorCode",
+              "type": "nvarchar(100)",
+              "key": "",
+              "nullable": true,
+              "notes": ""
+            }
+          ],
+          "relations": [
+            {
+              "parent": "EmailDeliveries",
+              "childColumns": [
+                "EmailDeliveryId"
+              ],
+              "parentColumns": [
+                "Id"
+              ],
+              "optional": false,
+              "one": false
+            }
+          ],
+          "rules": [
+            "Unique(EmailDeliveryId,AttemptNumber), AttemptNumber > 0. Không lưu password/credential trong SmtpResponse/error."
+          ],
+          "show": [
+            "Id",
+            "EmailDeliveryId",
+            "AttemptNumber",
+            "StartedAtUtc",
+            "FinishedAtUtc",
+            "Outcome",
+            "SmtpResponse",
+            "ErrorCode"
+          ]
+        }
+      ]
+    }
+  ],
+  "technicalTables": [
+    {
+      "name": "AuditEntries",
+      "purpose": "Audit append-only từng database, không gom thành DB dùng chung.",
+      "columns": [
+        {
+          "name": "Id",
+          "type": "uniqueidentifier",
+          "key": "PK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ActorUserId",
+          "type": "uniqueidentifier",
+          "key": "REF",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "ActorService",
+          "type": "nvarchar(50)",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "Action",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "EntityType",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "EntityId",
+          "type": "nvarchar(128)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "OccurredAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "CorrelationId",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ChangesJson",
+          "type": "nvarchar(max)",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        }
+      ],
+      "relations": [],
+      "rules": [
+        "Index(EntityType,EntityId,OccurredAtUtc). ChangesJson IS NULL OR ISJSON=1; không chứa secret. Cùng transaction dữ liệu."
+      ],
+      "show": [
+        "Id",
+        "ActorUserId",
+        "ActorService",
+        "Action",
+        "EntityType",
+        "EntityId",
+        "OccurredAtUtc",
+        "CorrelationId",
+        "ChangesJson"
+      ]
+    },
+    {
+      "name": "IdempotencyRequests",
+      "purpose": "Chống request/job lặp và tombstone abort cho phối hợp vòng đời.",
+      "columns": [
+        {
+          "name": "OperationId",
+          "type": "uniqueidentifier",
+          "key": "PK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ActorScope",
+          "type": "nvarchar(128)",
+          "key": "UK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "OperationName",
+          "type": "nvarchar(80)",
+          "key": "UK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "IdempotencyKey",
+          "type": "nvarchar(128)",
+          "key": "UK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "RequestHash",
+          "type": "binary(32)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ResourceId",
+          "type": "uniqueidentifier",
+          "key": "REF",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "type": "nvarchar(20)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ResponseStatusCode",
+          "type": "int",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "ResponseJson",
+          "type": "nvarchar(max)",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "CreatedAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ExpiresAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "RowVersion",
+          "type": "rowversion",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        }
+      ],
+      "relations": [],
+      "rules": [
+        "Unique(ActorScope,OperationName,IdempotencyKey); State Pending/Committed/Aborted. ActorScope hỗ trợ user hoặc worker.",
+        "Không xóa Pending hoặc abort tombstone còn có registration/replay chưa đối soát. Sau Aborted, source không được commit muộn."
+      ],
+      "show": [
+        "OperationId",
+        "ActorScope",
+        "OperationName",
+        "IdempotencyKey",
+        "RequestHash",
+        "ResourceId",
+        "State",
+        "ResponseStatusCode",
+        "ResponseJson",
+        "CreatedAtUtc",
+        "ExpiresAtUtc",
+        "RowVersion"
+      ]
+    },
+    {
+      "name": "OutboxMessages",
+      "purpose": "Sự kiện đã commit, dispatcher publish ít nhất một lần.",
+      "columns": [
+        {
+          "name": "EventId",
+          "type": "uniqueidentifier",
+          "key": "PK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "EventType",
+          "type": "nvarchar(150)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "SchemaVersion",
+          "type": "int",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "AggregateType",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "AggregateId",
+          "type": "uniqueidentifier",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "AggregateVersion",
+          "type": "bigint",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "OccurredAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "CorrelationId",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "PayloadJson",
+          "type": "nvarchar(max)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "Status",
+          "type": "nvarchar(20)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "AttemptCount",
+          "type": "int",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "NextAttemptAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "LeaseOwner",
+          "type": "nvarchar(100)",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "LeaseUntilUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "PublishedAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        },
+        {
+          "name": "LastError",
+          "type": "nvarchar(2000)",
+          "key": "",
+          "nullable": true,
+          "notes": ""
+        }
+      ],
+      "relations": [],
+      "rules": [
+        "ISJSON(PayloadJson)=1; index(Status,NextAttemptAtUtc,OccurredAtUtc). EventId không đổi khi retry.",
+        "Không FK từ AggregateId tới nhiều loại bảng; aggregate + Outbox cùng transaction local."
+      ],
+      "show": [
+        "EventId",
+        "EventType",
+        "SchemaVersion",
+        "AggregateType",
+        "AggregateId",
+        "AggregateVersion",
+        "OccurredAtUtc",
+        "CorrelationId",
+        "PayloadJson",
+        "Status",
+        "AttemptCount",
+        "NextAttemptAtUtc",
+        "LeaseOwner",
+        "LeaseUntilUtc",
+        "PublishedAtUtc",
+        "LastError"
+      ]
+    },
+    {
+      "name": "InboxMessages",
+      "purpose": "Dedupe consumer cùng transaction local với dữ liệu đã nhận.",
+      "columns": [
+        {
+          "name": "ConsumerName",
+          "type": "nvarchar(100)",
+          "key": "PK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "EventId",
+          "type": "uniqueidentifier",
+          "key": "PK",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "EventType",
+          "type": "nvarchar(150)",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "SchemaVersion",
+          "type": "int",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        },
+        {
+          "name": "ProcessedAtUtc",
+          "type": "datetimeoffset",
+          "key": "",
+          "nullable": false,
+          "notes": ""
+        }
+      ],
+      "relations": [],
+      "rules": [
+        "PK(ConsumerName,EventId). Ghi sau xử lý trong cùng transaction, ACK broker sau commit. Không tạo FK sang Outbox ở DB khác."
+      ],
+      "show": [
+        "ConsumerName",
+        "EventId",
+        "EventType",
+        "SchemaVersion",
+        "ProcessedAtUtc"
+      ]
+    }
+  ],
+  "technicalOwnership": {
+    "Identity": [
+      "AuditEntries",
+      "IdempotencyRequests"
+    ],
+    "Equipment": [
+      "AuditEntries",
+      "IdempotencyRequests",
+      "OutboxMessages",
+      "InboxMessages"
+    ],
+    "Maintenance": [
+      "AuditEntries",
+      "IdempotencyRequests",
+      "OutboxMessages"
+    ],
+    "Incident": [
+      "AuditEntries",
+      "IdempotencyRequests",
+      "OutboxMessages"
+    ],
+    "Notification": [
+      "AuditEntries",
+      "IdempotencyRequests",
+      "InboxMessages"
+    ]
+  },
+  "approvedDate": "2026-10-23",
+  "approval": "User: oke tôi duyệt hãy tạo db này"
+}

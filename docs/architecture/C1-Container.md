@@ -1,6 +1,6 @@
 # C1 - Microservices Containers - MedEquipSLA
 
-Ngày cập nhật: 23/10/2026. Thiết kế để duyệt trước khi code. [Kế hoạch](../../README.md).
+Ngày cập nhật: 23/10/2026. Kiến trúc đích và trạng thái scaffold/Code First. [Tổng quan](../../README.md).
 
 ![C1 - Microservices và database riêng](./images/C1-Container.png)
 
@@ -67,7 +67,7 @@ flowchart LR
     notify -->|SMTP| email
 ```
 
-Mermaid thể hiện đầy đủ gRPC gRPC internal lookups. PNG là tổng quan các luồng REST/gRPC/SQL/event chính; gRPC gRPC internal lookups được ghi chú để giữ ảnh dễ đọc. SignalR do Web khởi tạo qua Gateway; server push dùng cùng kết nối hai chiều.
+Mermaid thể hiện đầy đủ gRPC internal lookups. PNG là tổng quan các luồng REST/gRPC/SQL/event chính; gRPC internal lookups được ghi chú để giữ ảnh dễ đọc. SignalR do Web khởi tạo qua Gateway; server push dùng cùng kết nối hai chiều.
 
 ## Architectural rules
 
@@ -83,3 +83,7 @@ Mermaid thể hiện đầy đủ gRPC gRPC internal lookups. PNG là tổng qua
 Đây là kiến trúc đích, không phải mọi cạnh đã implement. REST Gateway và Equipment gRPC transport probe đã có source; authentication freshness, lifecycle registration/reconciliation, workers và notifications còn pending. [Compliance Matrix](../assignment-compliance/PRN232-CHECKLIST.md) và [review BR](../business/REVIEW-v1.0.md).
 
 Incident/Maintenance/Equipment/Notification sẽ cần Identity gRPC authorization checks theo BR-AUTH-12. GetServiceInfo là probe development, không chứng minh lookup hoặc phân quyền nghiệp vụ đã hoàn thành.
+
+## Database design proposal
+
+[ERD v0.1 đã được duyệt](../database/ERD-REVIEW.md). Đã sinh/apply Code First migrations cho 5 database và kiểm chứng schema trên SQL Server LocalDB, compatibility 160; baseline Compose của nhóm vẫn là SQL Server 2022. Xem [database verification](../database/VERIFICATION.md). Các protocol/nghiệp vụ mô tả trong C1 vẫn cần được triển khai tại Application/Domain.

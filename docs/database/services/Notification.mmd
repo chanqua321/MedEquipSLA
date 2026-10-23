@@ -1,0 +1,45 @@
+erDiagram
+    Notifications {
+        Guid Id PK "required"
+        Guid RecipientUserId UK "required; logical reference, no FK"
+        Guid SourceEventId UK "required"
+        string Kind UK "required"
+        string Title "required"
+        string Body "required"
+        string ResourceType "required"
+        Guid ResourceId "required; logical reference, no FK"
+        Guid DepartmentIdSnapshot "optional; logical reference, no FK"
+        DateTimeOffset CreatedAtUtc "required"
+        DateTimeOffset ReadAtUtc "optional"
+        bytes RowVersion "required"
+    }
+    NotificationPreferences {
+        Guid UserId PK "required; logical reference, no FK"
+        string NotificationKind PK "required"
+        bool InAppEnabled "required"
+        bool EmailEnabled "required"
+        DateTimeOffset UpdatedAtUtc "required"
+        bytes RowVersion "required"
+    }
+    EmailDeliveries {
+        Guid Id PK "required"
+        Guid NotificationId FK,UK "required"
+        string ToAddressSnapshot "required"
+        string MessageId UK "required"
+        string Status "required"
+        int AttemptCount "required"
+        DateTimeOffset NextAttemptAtUtc "optional"
+        DateTimeOffset SentAtUtc "optional"
+    }
+    EmailDeliveryAttempts {
+        Guid Id PK "required"
+        Guid EmailDeliveryId FK,UK "required"
+        int AttemptNumber UK "required"
+        DateTimeOffset StartedAtUtc "required"
+        DateTimeOffset FinishedAtUtc "optional"
+        string Outcome "required"
+        string SmtpResponse "optional"
+        string ErrorCode "optional"
+    }
+    Notifications ||--o| EmailDeliveries : "NotificationId"
+    EmailDeliveries ||--o{ EmailDeliveryAttempts : "EmailDeliveryId"

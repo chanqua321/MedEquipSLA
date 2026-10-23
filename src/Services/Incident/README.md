@@ -1,6 +1,6 @@
 # Incident Service
 
-Scaffold only. PRN232 responsibilities: Incident CQRS, SLA scanner, gRPC client, producer. Database: MedEquip_Incident; DbContext/migrations owned only by this service. Do not query another service database.
+Business APIs remain scaffold. Code First schema and InitialCreate migration are implemented and verified. PRN232 responsibilities: Incident CQRS, SLA scanner, gRPC client, producer. Database: MedEquip_Incident; DbContext/migrations owned only by this service. Do not query another service database.
 
 ## API – Services – Repository / CQRS
 
@@ -12,15 +12,15 @@ From repository root: `dotnet run --project src/Services/Incident/Incident.Api -
 
 ## Background jobs, producer/consumer and gRPC
 
-See [messaging guide](../../../docs/development/MESSAGING.md) and [gRPC guide](../../../docs/development/GRPC.md). Incident CQRS, SLA scanner, gRPC client, producer. Hosted workers are skeleton/disabled and Outbox/Inbox types are not mapped; no business success is claimed. Equipment alone hosts gRPC; Incident/Maintenance are actual configured clients with Development transport probe. Other services do not fake gRPC endpoints.
+See [messaging guide](../../../docs/development/MESSAGING.md) and [gRPC guide](../../../docs/development/GRPC.md). Incident CQRS, SLA scanner, gRPC client, producer. Hosted workers are skeleton/disabled and owned technical tables are mapped; dispatch/consumer behavior is pending; no business success is claimed. Equipment alone hosts gRPC; Incident/Maintenance are actual configured clients with Development transport probe. Other services do not fake gRPC endpoints.
 
 ## Compose and end-to-end
 
-Use root `.env.example` setup, then `docker compose up -d --build`; individual service: `docker compose up -d --build incident`. It depends on SQL bootstrap and Redis. Runtime DB user has datareader/datawriter, migrations need a separate scoped deployment identity. Full workflow is [documented as pending](../../../README.md#end-to-end-demo-sau-khi-hoàn-thiện).
+Use root `.env.example` setup, start infrastructure, apply service-owned migrations using the [database guide](../../../docs/database/SETUP.md), then `docker compose up -d --build`; individual service: `docker compose up -d --build incident`. It depends on SQL bootstrap and Redis. Runtime DB user has datareader/datawriter, migrations need a separate scoped deployment identity. Full workflow is [documented as pending](../../../README.md#end-to-end-demo-sau-khi-hoàn-thiện).
 
 ## Add entity / repository / Command / Query / migration
 
-Follow [root development steps](../../../README.md#thêm-entity-repository-command-query-và-migration): Domain entity/invariants, Infrastructure Fluent API/DbContext, Application repository/query abstractions, EF adapter implementation/DI, feature Command/Validator/Handler and Query/DTO/Handler, API auth/scope mapping, then service-owned Code First migration using dotnet-ef. No migrations generated until BR/model review. Never EnsureCreated + migrations or cross-database FK/transaction.
+Follow [root development steps](../../../README.md#thêm-entity-repository-command-query-và-migration): Domain entity/invariants, Infrastructure Fluent API/DbContext, Application repository/query abstractions, EF adapter implementation/DI, feature Command/Validator/Handler and Query/DTO/Handler, API auth/scope mapping, then service-owned Code First migration using dotnet-ef. InitialCreate is generated and applied on SQL Server LocalDB; add a newly named migration for subsequent model changes. See [database setup](../../../docs/database/SETUP.md) and [verification](../../../docs/database/VERIFICATION.md). Never EnsureCreated + migrations or cross-database FK/transaction.
 
 ## Team/Git and criteria
 

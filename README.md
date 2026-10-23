@@ -11,7 +11,11 @@ Repository: [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA) 
 - [Business Rules v1.0 đề xuất](docs/business/BUSINESS-RULES-v1.0-PROPOSED.md), [review nghiệp vụ](docs/business/REVIEW-v1.0.md).
 - [C0](docs/architecture/C0-System-Context.md), [C1](docs/architecture/C1-Container.md), [evidence scaffold](docs/assignment-compliance/SCAFFOLD-VERIFICATION.md).
 
-Ưu tiên đề PRN232 cho yêu cầu học phần; kiến trúc và BR là yêu cầu dự án. Không thay microservices bằng monolith, không bỏ CQRS/Clean Architecture/database-per-service. Ba vấn đề BR chưa chốt: Retire coordination, AuthorizationVersion freshness và reconciliation; review còn chỉ ra mốc Resolution SLA, nhắc trước hạn và calibration failure. Scaffold không tự quyết định các quy tắc này.
+Ưu tiên đề PRN232 cho yêu cầu học phần; kiến trúc và BR là yêu cầu dự án. Không thay microservices bằng monolith, không bỏ CQRS/Clean Architecture/database-per-service. ERD được duyệt chốt D1–D4 về SLA, occurrence, registration/reconciliation và calibration failure. Schema lưu đủ dữ liệu cho các quy tắc này; authorization freshness và protocol liên service vẫn cần triển khai/test tại Application/Domain.
+
+## Database Code First đã tạo
+
+[ERD v0.1](docs/database/ERD-REVIEW.md) và D1–D4 đã được người dùng duyệt. Đã có 5 migration `InitialCreate`, 47 bảng ứng dụng và 5 bảng migration history. Đã apply và kiểm thử trên SQL Server LocalDB 2025, compatibility 160; môi trường chung của team vẫn là SQL Server 2022 CU27 trong Compose. Xem [cách tạo/kết nối database](docs/database/SETUP.md) và [kết quả kiểm tra thực tế](docs/database/VERIFICATION.md).
 
 ## Kiến trúc đáp ứng API – Services – Repository
 
@@ -78,11 +82,11 @@ JWT middleware đã cấu hình xác minh RSA, issuer/audience/lifetime; token i
 
 1. Copy `.env.example` thành `.env`, đặt 6 password mạnh khác nhau theo ghi chú. `.env` bị Git ignore. Đây là cấu hình development/demo, không phải cấu hình production.
 2. `docker compose config --quiet` kiểm tra cấu hình.
-3. `docker compose up -d --build` build/start tất cả. Hoặc `docker compose up -d sqlserver redis db-bootstrap` chỉ chạy hạ tầng.
+3. `docker compose up -d sqlserver redis db-bootstrap` chạy hạ tầng. Apply migrations theo [database setup](docs/database/SETUP.md), rồi `docker compose up -d --build` chạy các ứng dụng.
 4. `docker compose ps`, `docker compose logs --tail 50 equipment incident notification` kiểm tra process; gọi các health URL trong bảng.
 5. `docker compose down` dừng, giữ volume. Không thêm `-v` khi muốn giữ dữ liệu.
 
-Bootstrap chỉ tạo 5 database và 5 login/user riêng với datareader/datawriter, không tạo bảng nghiệp vụ và không cấp db_owner/DDL cho runtime. Migrations sẽ chạy bằng deployment identity riêng được giới hạn database sau khi khóa model; chưa có migration job triển khai. Database hiện chưa có bảng ứng dụng. Password bootstrap không tự rotate login đã tồn tại; rotate bằng thao tác quản trị riêng, không xóa volume để sửa mật khẩu.
+Bootstrap chỉ tạo 5 database và 5 login/user riêng với datareader/datawriter, không tạo bảng nghiệp vụ và không cấp db_owner/DDL cho runtime. Migrations chạy thủ công bằng deployment identity có DDL trên đúng database qua `scripts/Update-Databases.ps1`; không chạy bằng credential runtime. Compose bootstrap chưa tự apply business migrations. Schema đã được tạo/kiểm thử tại LocalDB; Docker Engine chưa chạy được trong lượt xác minh này. Password bootstrap không tự rotate login đã tồn tại; rotate bằng thao tác quản trị riêng, không xóa volume để sửa mật khẩu.
 
 Network `medequip`, volumes `sql-data`/`redis-data`, connection strings bằng env và DNS service; không dùng localhost từ container để gọi service khác. Mỗi service chỉ có credential database của mình. SQL bootstrap dùng sa chỉ trong job quản trị; app không dùng sa. Swagger và diagnostic probe chỉ mở ở Development. Trước cloud deployment phải bổ sung TLS, quản lý secrets và readiness checks thật.
 
@@ -114,11 +118,11 @@ MaintenanceScheduler, SlaDeadlineScanner và NotificationConsumer có registered
 
 ```sh
 dotnet tool restore
-dotnet ef migrations add InitialCreate --project src/Services/Equipment/Equipment.Infrastructure --startup-project src/Services/Equipment/Equipment.Api --context EquipmentDbContext --output-dir Persistence/Migrations
+dotnet ef migrations add DescribeYourChange --project src/Services/Equipment/Equipment.Infrastructure --startup-project src/Services/Equipment/Equipment.Api --context EquipmentDbContext --output-dir Persistence/Migrations
 dotnet ef migrations script --idempotent --project src/Services/Equipment/Equipment.Infrastructure --startup-project src/Services/Equipment/Equipment.Api --context EquipmentDbContext
 ```
 
-Đây là lệnh cho giai đoạn sau; scaffold chưa sinh InitialCreate vì model nghiệp vụ chưa khóa. ConnectionStrings__Database dùng user-secrets hoặc env local; không copy password vào tài liệu, log hoặc PR.
+`InitialCreate` đã tồn tại trong mỗi service; chỉ tạo migration tên mới khi thay đổi model. `ConnectionStrings__Database` dùng env local cho EF design-time factory; factory kiểm tra đúng tên database của service. Không copy password vào tài liệu, log hoặc PR. Khi chạy API native, đặt biến này riêng cho đúng service; không dùng cùng connection string cho cả năm service.
 
 ## Git và đóng góp
 
