@@ -84,6 +84,6 @@ Mermaid thể hiện đầy đủ gRPC internal lookups. PNG là tổng quan cá
 
 Incident/Maintenance/Equipment/Notification sẽ cần Identity gRPC authorization checks theo BR-AUTH-12. GetServiceInfo là probe development, không chứng minh lookup hoặc phân quyền nghiệp vụ đã hoàn thành.
 
-## Database design proposal
+## Approved database design
 
 [ERD v0.1 đã được duyệt](../database/ERD-REVIEW.md). Đã sinh/apply Code First migrations cho 5 database và kiểm chứng schema trên SQL Server LocalDB, compatibility 160; baseline Compose của nhóm vẫn là SQL Server 2022. Xem [database verification](../database/VERIFICATION.md). Các protocol/nghiệp vụ mô tả trong C1 vẫn cần được triển khai tại Application/Domain.

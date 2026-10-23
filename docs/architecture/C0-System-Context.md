@@ -71,7 +71,7 @@ C4Context
 ## Assumptions
 
 - No hospital information system, identity provider, or other external service is in scope.
-- This is the proposed architecture for the assignment. The system is not implemented yet.
+- This is the target architecture. Foundation processes and Code First schema are implemented; business workflows remain planned. See the current [implementation status](../../README.md#trạng-thái-và-kiểm-thử).
 
 ## Links to other levels
 

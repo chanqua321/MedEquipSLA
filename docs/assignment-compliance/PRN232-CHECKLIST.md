@@ -1,6 +1,6 @@
 # PRN232 Final Assignment — Compliance Matrix
 
-Ngày: 23/10/2026. Giai đoạn: **scaffold + Code First database đã được duyệt**. Đã đọc đủ 3 trang [PDF chính thức](./PRN232%20-%20Final%20Assignment.pdf) trước khi tạo solution.
+Ngày: 23/10/2026. Giai đoạn: **foundation + Code First database đã được duyệt + bộ tài liệu onboarding**. Đã đọc đủ 3 trang [PDF chính thức](./PRN232%20-%20Final%20Assignment.pdf) trước khi tạo solution.
 
 Không có tiêu chí học phần được đánh dấu PASS chỉ vì có skeleton hoặc build thành công. Status được giữ IN PROGRESS/NOT STARTED/BLOCKED cho đến khi có behavior + evidence phù hợp. PASS/FAIL chỉ được dùng sau kiểm tra tiêu chí tương ứng, không dùng thay cho trạng thái build scaffold.
 
@@ -57,7 +57,7 @@ Source file/project là đường dẫn tương đối root repo; `*` thể hi�
 | DEL-04 | Docker Compose configuration (if applicable). | compose.yaml có networks/volumes/env | compose.yaml | config + up + connectivity tests | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | DEL-05 | API documentation (Swagger/OpenAPI). | Swagger runtime cho 5 service; business endpoints còn thiếu | MedEquipSLA.Hosting; */Api/Program.cs | GET /swagger/v1/swagger.json + review paths/schemas/auth | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | DEL-06 | README: Project description. | Mô tả MedEquipSLA và giới hạn scaffold | README.md | Review onboarding với thành viên mới | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
-| DEL-07 | README: System architecture. | C0/C1, graph/layer mapping | README.md; docs/architecture | Review consistency với source + BR | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
+| DEL-07 | README: System architecture. | C0/C1, graph/layer mapping | README.md; docs/architecture; docs/README.md | Review consistency với source + BR | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | DEL-08 | README: Technology stack. | Version pin, package/image lock status | README.md; global.json; Directory.Packages.props | Restore/build theo lock | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | DEL-09 | README: Installation guide. | Native và Compose hướng dẫn | README.md | Thành viên mới checkout sạch và chạy thử | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | DEL-10 | README: Deployment instructions. | Compose instructions; chưa runtime verified | README.md; compose.yaml | Chạy full stack trên máy khác/CI | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
@@ -74,7 +74,7 @@ Source file/project là đường dẫn tương đối root repo; `*` thể hi�
 | PROJ-03 | Maintenance scheduler and SLA scanner with idempotency/logging. | Hosted skeleton only; tick không phải job | */Workers | Deadline + unique key + concurrent workers | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | PROJ-04 | Authorization and Department Isolation. | JWT guard only; business scopes/version freshness pending | Identity; docs/business/REVIEW-v1.0.md | AC-01/02, list/detail/export/SignalR | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | PROJ-05 | Validation, Swagger, DI, logging, exception handling. | Validator example/DI/Swagger/ProblemDetails | src/BuildingBlocks/MedEquipSLA.Hosting; */Application | Failure paths + field validation + logs | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
-| PROJ-06 | Source control and Private GitHub repository if authorized. | Đã tạo Private repo và push main qua Git Credential Manager | docs/development/GIT-WORKFLOW.md; README.md | Private visibility + remote + push verified | https://github.com/chanqua321/MedEquipSLA; baseline f4d0f24863807f12d63d1f5f7c531094164b2d7d; nghiệp vụ vẫn chỉ scaffold | IN PROGRESS |
+| PROJ-06 | Source control and Private GitHub repository if authorized. | Đã tạo Private repo và push main qua Git Credential Manager | docs/development/GIT-WORKFLOW.md; README.md; docs/assignment-compliance/DOCUMENTATION-VERIFICATION.md | Private visibility + remote + push verified | https://github.com/chanqua321/MedEquipSLA; baseline f4d0f24863807f12d63d1f5f7c531094164b2d7d; nghiệp vụ vẫn chỉ scaffold | IN PROGRESS |
 
 ## Assessment weights (PDF section 7)
 
@@ -83,3 +83,7 @@ Architecture/design 20%; REST 20%; Background Job 10%; Broker 15%; gRPC 15%; Doc
 ## Evidence policy
 
 Mỗi PR cập nhật status + evidence gắn commit/PR/test output thực. Skeleton generated code, health 200, Swagger JSON hoặc gRPC GetServiceInfo không chứng minh CRUD/JWT login, SLA, producer/consumer hay business GetEquipment đã đạt. GitHub đã nhận push và tạo CI runs; xem trạng thái thực tại [Actions](https://github.com/chanqua321/MedEquipSLA/actions). Không suy ra CI xanh chỉ từ việc push thành công.
+
+## Tài liệu và audit mới nhất
+
+Ba tài liệu chính: [Business](../BUSINESS-DOCUMENTATION.md), [API](../API-DOCUMENTATION.md), [Database](../DATABASE-DOCUMENTATION.md); [mục lục](../README.md), [onboarding](../development/GETTING-STARTED.md), [evidence](DOCUMENTATION-VERIFICATION.md). Root và 5 service README đã đối chiếu với source. Tài liệu Planned không thay behavior evidence; các tiêu chí CRUD/JWT issuance/background/broker/E2E giữ nguyên trạng thái chưa hoàn tất.

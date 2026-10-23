@@ -4,7 +4,7 @@
 
 Mỗi bảng được tạo trong database của service sở hữu. Không có database shared/common. Không tính các bảng kỹ thuật là core CRUD entity của đề PRN232.
 
-| Service | Bảng kỹ thuật dự kiến |
+| Service | Bảng kỹ thuật owner-local đã mapping/tạo |
 |---|---|
 | Identity | AuditEntries, IdempotencyRequests |
 | Equipment | AuditEntries, IdempotencyRequests, OutboxMessages, InboxMessages |

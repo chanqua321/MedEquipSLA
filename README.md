@@ -1,141 +1,210 @@
-# MedEquipSLA — PRN232 foundation
+# MedEquipSLA
 
-Repository: [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA) — **Private**.
+Hệ thống quản lý thiết bị y tế, bảo trì, hiệu chuẩn, sự cố và SLA theo khoa/phòng, phục vụ đồ án PRN232. Kiến trúc: **5 microservices, SQL Server database per service, EF Core Code First, CQRS và Clean Architecture**.
 
-**Giai đoạn: scaffold, chưa hoàn thành Final Assignment.** Luồng đăng nhập, CRUD nghiệp vụ, quét hạn/SLA, Outbox/Inbox và consumer nghiệp vụ chưa triển khai. API tài nguyên hiện trả 401 nếu thiếu JWT; khi qua auth vẫn trả 501. Không có dữ liệu giả được mô tả như tính năng đã chạy.
+**Hiện trạng: foundation và database đã triển khai; ứng dụng nghiệp vụ chưa hoàn thiện.** Chạy được API process, Gateway, Swagger, gRPC transport probe và giao diện giới thiệu. Có 5 migration và 47 bảng ứng dụng được kiểm tra trên SQL Server. Đăng nhập, CRUD, department isolation, jobs thực, consumer, email và SignalR còn Planned. Health 200/CI xanh không chứng minh hoàn thành Final Assignment.
 
-## Nguồn yêu cầu và trạng thái
+## Bắt đầu tại đây
 
-- [Đề học phần chính thức](docs/assignment-compliance/PRN232%20-%20Final%20Assignment.pdf) đã được đọc đủ 3 trang trước khởi tạo solution.
-- [PRN232 Compliance Matrix](docs/assignment-compliance/PRN232-CHECKLIST.md): tiêu chí còn thiếu, cách kiểm chứng và bằng chứng.
-- [Business Rules v1.0 đề xuất](docs/business/BUSINESS-RULES-v1.0-PROPOSED.md), [review nghiệp vụ](docs/business/REVIEW-v1.0.md).
-- [C0](docs/architecture/C0-System-Context.md), [C1](docs/architecture/C1-Container.md), [evidence scaffold](docs/assignment-compliance/SCAFFOLD-VERIFICATION.md).
+| Nhu cầu | Tài liệu |
+|---|---|
+| Clone và chạy các thành phần hiện có | [Getting Started](docs/development/GETTING-STARTED.md) |
+| Hiểu actor, quy trình, SLA và quyết định còn mở | [Business Documentation](docs/BUSINESS-DOCUMENTATION.md) |
+| Xem route/response thật và contract Planned | [API Documentation](docs/API-DOCUMENTATION.md) |
+| Hiểu entity, quan hệ, ownership và migrations | [Database Documentation](docs/DATABASE-DOCUMENTATION.md) |
+| Tìm toàn bộ tài liệu | [Mục lục docs](docs/README.md) |
+| Đối chiếu tiêu chí học phần | [PRN232 Checklist](docs/assignment-compliance/PRN232-CHECKLIST.md) |
 
-Ưu tiên đề PRN232 cho yêu cầu học phần; kiến trúc và BR là yêu cầu dự án. Không thay microservices bằng monolith, không bỏ CQRS/Clean Architecture/database-per-service. ERD được duyệt chốt D1–D4 về SLA, occurrence, registration/reconciliation và calibration failure. Schema lưu đủ dữ liệu cho các quy tắc này; authorization freshness và protocol liên service vẫn cần triển khai/test tại Application/Domain.
+## Mục tiêu, vai trò và tính năng
 
-## Database Code First đã tạo
+Theo dõi thiết bị theo khoa; xử lý sự cố có nghiệm thu; lưu lịch sử bảo trì/hiệu chuẩn; tính thời gian đáp ứng SLA và gửi thông báo. Không quản lý bệnh nhân, bệnh án hoặc điều trị.
 
-[ERD v0.1](docs/database/ERD-REVIEW.md) và D1–D4 đã được người dùng duyệt. Đã có 5 migration `InitialCreate`, 47 bảng ứng dụng và 5 bảng migration history. Đã apply và kiểm thử trên SQL Server LocalDB 2025, compatibility 160; môi trường chung của team vẫn là SQL Server 2022 CU27 trong Compose. Xem [cách tạo/kết nối database](docs/database/SETUP.md) và [kết quả kiểm tra thực tế](docs/database/VERIFICATION.md).
+| Vai trò | Phạm vi đích |
+|---|---|
+| Admin | Tài khoản, khoa, thiết bị, lịch, SLA; phân công và nghiệm thu |
+| Technician | Đọc dữ liệu hệ thống, cập nhật công việc được phân công |
+| Staff / Department Staff | Xem thiết bị, báo sự cố và xem hồ sơ trong khoa hiện tại |
 
-## Kiến trúc đáp ứng API – Services – Repository
+Role seed là `Admin`, `Technician`, `DepartmentStaff`; policy role/khoa chưa nối vào endpoint nghiệp vụ. Tính năng đích: vòng đời Equipment/Incident/WorkOrder, SLA snapshot 24/7, reminder theo occurrence, registration trước Retire, notification bền và báo cáo theo quyền. [BR v1.0 gốc](docs/business/BUSINESS-RULES-v1.0-PROPOSED.md) vẫn **Proposed**; [ERD v0.1 và D1–D4](docs/database/APPROVAL.md) đã Approved. Không tự nâng toàn bộ BR thành Approved.
+
+## Kiến trúc
+
+Sơ đồ là **kiến trúc đích**; bảng trạng thái phía dưới phân biệt các phần đã chạy.
+
+```mermaid
+flowchart LR
+    Users[Admin / Technician / Staff] --> Web[React Web]
+    Web --> Gateway[YARP Gateway]
+    Gateway --> Identity
+    Gateway --> Equipment
+    Gateway --> Maintenance
+    Gateway --> Incident
+    Gateway --> Notification
+    Identity --> IDB[(MedEquip_Identity)]
+    Equipment --> EDB[(MedEquip_Equipment)]
+    Maintenance --> MDB[(MedEquip_Maintenance)]
+    Incident --> XDB[(MedEquip_Incident)]
+    Notification --> NDB[(MedEquip_Notification)]
+    Maintenance -->|gRPC| Equipment
+    Incident -->|gRPC| Equipment
+    Equipment -.-> Redis[Redis Streams]
+    Maintenance -.-> Redis
+    Incident -.-> Redis
+    Redis -.-> Equipment
+    Redis -.-> Notification
+    Notification -.-> Email[External SMTP]
+```
+
+| Thành phần | Port host | Trách nhiệm / README |
+|---|---|---|
+| Identity | 5101 | [Tài khoản, JWT, quyền](src/Services/Identity/README.md) |
+| Equipment | REST 5102; gRPC 5103 | [Khoa, danh mục, thiết bị, trạng thái](src/Services/Equipment/README.md) |
+| Maintenance | 5104 | [Schedule, occurrence, WorkOrder, calibration](src/Services/Maintenance/README.md) |
+| Incident | 5105 | [Sự cố, nghiệm thu, SLA](src/Services/Incident/README.md) |
+| Notification | 5106 | [Inbox, in-app, email, SignalR](src/Services/Notification/README.md) |
+| Gateway / Web | 5100 / 5173 | REST routing / React scaffold |
+| SQL Server / Redis | 14333 / 6379 | Infrastructure; host ports bind loopback |
+
+Mỗi service đi theo **API → Application handlers/Services → Repository abstractions → Infrastructure Repository/EF Core → SQL Server**. Domain độc lập framework. Clean Architecture giữ dependency hướng vào trong; CQRS Command/Query nằm ở lớp Application Services, đáp ứng mô hình của đề. Repository theo aggregate, query adapter trả read model; không generic repository hình thức. Không shared entity/DbContext, FK/JOIN/transaction xuyên DB. Xem [C0](docs/architecture/C0-System-Context.md), [C1](docs/architecture/C1-Container.md), [Solution Structure](docs/architecture/SOLUTION-STRUCTURE.md).
+
+## Công nghệ và cấu trúc
+
+| Thành phần | Version khóa trong source |
+|---|---|
+| .NET SDK / target / ASP.NET & EF Core | 10.0.402 / net10.0 / 10.0.13 |
+| SQL Server / Redis | 2022 CU27 compatibility 160 / 8.2.10 |
+| gRPC / Protobuf / Redis client | 2.84.0 / 3.36.2 / StackExchange.Redis 3.4.5 |
+| YARP / FluentValidation / Swashbuckle | 2.3.0 / 12.2.0 / 10.3.1 |
+| Web | Node 24.19.0, React 19.3.0, TypeScript 5.9.3, Vite 7.3.7 |
+
+Nguồn: [global.json](global.json), [Directory.Packages.props](Directory.Packages.props), lockfiles, [package.json](src/Web/package.json), [compose.yaml](compose.yaml). Không tự cập nhật major hoặc dùng image `latest`. Image tag đã khóa; digest/full Docker runtime chưa xác minh.
 
 ```text
-Client -> Gateway (REST reverse proxy) -> Service.Api
-  -> Service.Application / Features / Command|QueryHandler   [Services layer]
-  -> Service.Application / Abstractions / I...Repository|QueryAdapter
-  -> Service.Infrastructure / Persistence / Repository|QueryAdapter
-  -> EF Core / SQL Server database do service sở hữu
-
-Domain: độc lập với EF, Redis, gRPC, ASP.NET và service khác.
+src/BuildingBlocks/  CQRS interfaces, hosting/JWT/errors
+src/Contracts/      Protobuf và IntegrationEvent envelope
+src/Gateway/        YARP, không xử lý nghiệp vụ
+src/Services/       5 service, mỗi service có Domain/Application/Infrastructure/Api
+src/Web/            React/TypeScript
+docs/               Nghiệp vụ, API, DB, kiến trúc, phát triển, compliance
+scripts/            Apply migrations, kiểm tra database
+tests/database/     SQL schema và behavior checks, rollback fixtures
+infrastructure/     Bootstrap tạo DB/runtime users
 ```
 
-Clean Architecture xác định hướng dependency; CQRS tách use case đọc/ghi trong Application Services. Vì thế vẫn có đủ API, Services và Repository theo đề, chỉ tổ chức theo use case thay vì một lớp service lớn. Repository abstraction nằm ở Application; implementation EF trong Infrastructure. Không có generic repository hình thức; repository hiện là placeholder theo service, sẽ thay bằng aggregate-specific interfaces khi model BR được khóa. Query có adapter riêng, không ghi dữ liệu. API chỉ tham chiếu Infrastructure để đăng ký DI, không dùng DbContext trong endpoint.
+## Môi trường, clone và build
 
-Mỗi service có Domain/Application/Infrastructure/Api, DbContext và database riêng. BuildingBlocks chỉ chứa interfaces CQRS và hosting, Contracts chỉ chứa protobuf/event DTO; không chia sẻ business entity hoặc DbContext.
-
-| Ứng dụng | REST native / Compose host | Database | Tiêu chí chính |
-|---|---|---|---|
-| Identity | 5101 | MedEquip_Identity | JWT/Identity, quyền và tài khoản — pending |
-| Equipment | 5102; gRPC 5103 | MedEquip_Equipment | CRUD, gRPC server, SQL Code First |
-| Maintenance | 5104 | MedEquip_Maintenance | CQRS, scheduler, gRPC client, producer |
-| Incident | 5105 | MedEquip_Incident | CQRS, SLA scanner, gRPC client, producer |
-| Notification | 5106 | MedEquip_Notification | Consumer, Inbox, email, SignalR — pending |
-| Gateway | 5100 | Không có | Routing REST tới các ứng dụng độc lập |
-| Web | 5173 | Không có | React/TypeScript scaffold |
-
-## Toolchain chung cho team
-
-.NET SDK **10.0.402**, EF Core/SQL provider **10.0.13**, SQL Server **2022 CU27**, Redis **8.2.10**, Node **24.19.0**. SDK khóa ở global.json, NuGet ở Directory.Packages.props và packages.lock.json, frontend ở package-lock.json. Image dùng tag cụ thể; chưa xác minh image digest vì chưa chạy pull/build Docker. Kiến trúc dùng tính năng .NET 8+ mà đề yêu cầu; chọn .NET 10 LTS cho baseline mới, không theo SDK của một cá nhân.
-
-Compose là môi trường chuẩn cho cả nhóm, không yêu cầu LocalDB hoặc đường dẫn Windows riêng. SQL Server container hỗ trợ x86-64; thành viên ARM dùng SQL Server x86-64 của nhóm/remote với connection string riêng. Không tuyên bố mọi CPU đều chạy được SQL Server container local. Xem [Microsoft platforms](https://learn.microsoft.com/en-us/sql/linux/install-upgrade/setup?view=sql-server-ver17).
-
-## Restore/build
-
-Cài SDK trong global.json và Node trong src/Web/.node-version hoặc dùng Docker multi-stage build; không cần thay SDK mặc định của máy.
+Native cần Git, SDK đúng `global.json`, Node 24/npm. PowerShell 7 dùng cho `.ps1`; `sqlcmd` cho SQL checks; `grpcurl` tùy chọn cho gRPC. Docker Desktop/Engine Linux containers + Compose là môi trường chung. Repo Private yêu cầu quyền truy cập.
 
 ```sh
+git clone https://github.com/chanqua321/MedEquipSLA.git
+cd MedEquipSLA
+dotnet tool restore
 dotnet restore MedEquipSLA.sln --locked-mode
 dotnet build MedEquipSLA.sln -c Release --no-restore
-cd src/Web
-npm ci
-npm run build
 ```
 
-Các lệnh dùng ở root repo nếu không ghi khác. dotnet-ef là local tool: `dotnet tool restore`. Không commit cache SDK/NuGet/npm hoặc node_modules.
+Không phụ thuộc LocalDB hoặc đường dẫn máy người tạo. SQL Server container dùng x86-64; thành viên ARM dùng SQL Server x86-64 nhóm/remote với connection riêng. Chưa đo minimum RAM toàn stack. [Environment Setup](docs/development/ENVIRONMENT-SETUP.md) hướng dẫn cấu hình và các chế độ chạy.
 
-## Chạy native REST API
+## Cấu hình và chạy backend
+
+`appsettings.json` là mẫu, không có password/signing key. `ConnectionStrings__Database` phải đúng owner; `ConnectionStrings__Redis` chọn Redis; Incident/Maintenance dùng `Grpc__EquipmentAddress`. `.env` được Compose đọc, **không tự nạp vào `dotnet run`**. Giữ `Workers__Enabled=false` vì workers hiện chỉ log tick.
+
+Chạy từng lệnh ở terminal riêng, từ root:
 
 ```sh
+dotnet run --project src/Services/Identity/Identity.Api --launch-profile Identity
 dotnet run --project src/Services/Equipment/Equipment.Api --launch-profile Equipment
-dotnet run --project src/Services/Incident/Incident.Api --launch-profile Incident
 dotnet run --project src/Services/Maintenance/Maintenance.Api --launch-profile Maintenance
+dotnet run --project src/Services/Incident/Incident.Api --launch-profile Incident
+dotnet run --project src/Services/Notification/Notification.Api --launch-profile Notification
 dotnet run --project src/Gateway/MedEquipSLA.Gateway --launch-profile Gateway
 ```
 
-Chạy từng lệnh trong terminal riêng. Identity/Notification tương tự theo tên service. Health: `curl http://localhost:5102/health/live`; Swagger: http://localhost:5102/swagger/index.html. Gateway: http://localhost:5100/equipment/health/live. Health/live chỉ xác nhận process, không xác nhận database/broker hoặc nghiệp vụ.
+Health/Swagger/probe không cần business data; health không kiểm tra SQL/Redis. JWT middleware xác minh RS256/issuer/audience/lifetime qua `Jwt__PublicKeyPath`; chưa có API cấp token, key hoặc user mặc định. Không cấu hình public key thì token không được chấp nhận.
 
-Native frontend: `cd src/Web`, `npm ci`, `npm run dev`. Proxy `/api/equipment/...` đi Gateway; production nginx trong Compose dùng cùng đường dẫn.
+## Frontend và Swagger
 
-JWT middleware đã cấu hình xác minh RSA, issuer/audience/lifetime; token issuance, refresh và resource authorization còn pending. Đặt public PEM qua `Jwt__PublicKeyPath`, không tạo signing key mặc định hoặc bypass auth. Không cấu hình key thì token không được chấp nhận; health và Development probes vẫn chạy. Không dùng khóa thật trong source control.
+```sh
+cd src/Web
+npm ci
+npm run dev
+```
 
-## Docker Compose
+Mở http://localhost:5173; đây là trang giới thiệu foundation. `npm run build` kiểm tra TypeScript/build Vite. Proxy frontend `/api/equipment/...` → Gateway `/equipment/...` → Equipment `/...`; health `/api/equipment/health/live`, resource `/api/equipment/api/equipment`.
 
-1. Copy `.env.example` thành `.env`, đặt 6 password mạnh khác nhau theo ghi chú. `.env` bị Git ignore. Đây là cấu hình development/demo, không phải cấu hình production.
-2. `docker compose config --quiet` kiểm tra cấu hình.
-3. `docker compose up -d sqlserver redis db-bootstrap` chạy hạ tầng. Apply migrations theo [database setup](docs/database/SETUP.md), rồi `docker compose up -d --build` chạy các ứng dụng.
-4. `docker compose ps`, `docker compose logs --tail 50 equipment incident notification` kiểm tra process; gọi các health URL trong bảng.
-5. `docker compose down` dừng, giữ volume. Không thêm `-v` khi muốn giữ dữ liệu.
+Swagger trong Development: `http://localhost:<port>/swagger/index.html`, JSON `/swagger/v1/swagger.json` ở port 5101/5102/5104/5105/5106. Gateway không tổng hợp Swagger. Chưa có bearer security definition/Authorize UI; dùng curl/Postman gửi bearer khi có token hợp lệ. [API Documentation](docs/API-DOCUMENTATION.md) ghi route/DTO/status thực tế.
 
-Bootstrap chỉ tạo 5 database và 5 login/user riêng với datareader/datawriter, không tạo bảng nghiệp vụ và không cấp db_owner/DDL cho runtime. Migrations chạy thủ công bằng deployment identity có DDL trên đúng database qua `scripts/Update-Databases.ps1`; không chạy bằng credential runtime. Compose bootstrap chưa tự apply business migrations. Schema đã được tạo/kiểm thử tại LocalDB; Docker Engine chưa chạy được trong lượt xác minh này. Password bootstrap không tự rotate login đã tồn tại; rotate bằng thao tác quản trị riêng, không xóa volume để sửa mật khẩu.
+## Docker và migrations
 
-Network `medequip`, volumes `sql-data`/`redis-data`, connection strings bằng env và DNS service; không dùng localhost từ container để gọi service khác. Mỗi service chỉ có credential database của mình. SQL bootstrap dùng sa chỉ trong job quản trị; app không dùng sa. Swagger và diagnostic probe chỉ mở ở Development. Trước cloud deployment phải bổ sung TLS, quản lý secrets và readiness checks thật.
+Copy `.env.example` thành `.env` nếu chưa có, điền 6 password mạnh khác nhau. PowerShell: `Copy-Item .env.example .env`; Bash: `cp .env.example .env`. Không ghi đè environment đang dùng.
 
-## Kiểm thử gRPC riêng
+```sh
+docker compose config --quiet
+docker compose up -d sqlserver redis db-bootstrap
+```
 
-Xem [gRPC guide](docs/development/GRPC.md). Hiện có probe giao tiếp thật HTTP/2:
+Bootstrap tạo DB/runtime users datareader/datawriter, **không apply schema**. Provision deployment identity trên từng DB và đặt migration connection theo [Database Setup](docs/database/SETUP.md), rồi:
+
+```powershell
+pwsh ./scripts/Update-Databases.ps1
+docker compose up -d --build
+docker compose ps
+```
+
+Script mặc định build trước apply; `-NoBuild` chỉ khi đã build Debug. Không tự migrate từ mọi app replica. LocalDB là lựa chọn Windows bổ sung: `pwsh ./scripts/Update-Databases.ps1 -LocalDb`, rồi `pwsh ./scripts/Test-Databases.ps1`. Database đã kiểm chứng trên LocalDB; Compose build/up còn chờ Engine. `docker compose down` giữ volumes; không dùng `down -v` để sửa password.
+
+## Kiểm thử gRPC và Redis Streams
+
+Sau khi Equipment/Incident/Maintenance chạy:
 
 ```sh
 grpcurl -plaintext -import-path src/Contracts/MedEquipSLA.Contracts.Grpc/Protos -proto equipment.proto -d '{}' localhost:5103 medequip.equipment.v1.EquipmentLookup/GetServiceInfo
 curl http://localhost:5105/api/diagnostics/equipment-grpc
 curl http://localhost:5104/api/diagnostics/equipment-grpc
+docker compose exec redis redis-cli PING
+docker compose exec redis redis-cli XLEN medequip:scaffold:v1
 ```
 
-Probe chỉ trả service/phase scaffold, không thay thế business GetEquipment (chưa triển khai). Không có REST thay cho gRPC ở hai client này. Lệnh grpcurl cần cài công cụ riêng; protobuf contract được cung cấp để không cần reflection.
+Probe gRPC thật trả `businessLookupImplemented=false`; GetEquipment cần JWT và còn UNIMPLEMENTED. [gRPC Guide](docs/development/GRPC.md) mô tả lỗi/deadline. [Messaging Guide](docs/development/MESSAGING.md) có XADD/XREADGROUP/ACK kiểm tra Redis. redis-cli không thay producer/consumer app; Outbox/Inbox đã có bảng, xử lý event còn Planned.
 
-## Background jobs và Producer/Consumer
+## Feature, coding conventions và Git
 
-MaintenanceScheduler, SlaDeadlineScanner và NotificationConsumer có registered hosted-service skeleton, mặc định `Workers__Enabled=false`. Bật true hiện chỉ tạo log tick; không quét DB, phát event, gửi email hoặc đọc stream. Xem [messaging guide](docs/development/MESSAGING.md) để kiểm tra broker và các bước hoàn thiện producer/outbox/consumer/inbox. Không đánh dấu criteria background/message PASS bằng log tick hoặc redis-cli.
+[Development Workflow](docs/development/DEVELOPMENT-WORKFLOW.md): entity → Fluent API → repository/read adapter → Command/Query/validator → endpoint → migration/test. [Coding Conventions](docs/development/CODING-CONVENTIONS.md): naming, dependencies, UTC, authorization, errors.
 
-## Thêm Entity, Repository, Command, Query và migration
+Thông thường: cập nhật `main` → `feature/<service>-<scope>` → Conventional Commit → push feature → PR → review/CI → merge. Không force push main, không commit secret/cache. [Git Workflow](docs/development/GIT-WORKFLOW.md) có clone/conflict/PR commands. Owner cho phép push trực tiếp main cho lượt hoàn thiện foundation này; các feature tiếp theo vẫn qua review.
 
-1. Chốt BR/acceptance test; thêm aggregate/invariants trong `<Service>.Domain`, không tham chiếu infrastructure.
-2. Thêm Fluent API configuration và DbSet trong `<Service>.Infrastructure/Persistence`; không thêm FK hoặc navigation sang database khác.
-3. Đặt repository abstraction theo aggregate và read DTO/query interface trong Application; implement EF repository/query adapter ở Infrastructure. Đăng ký DI.
-4. Thêm Features/<UseCase>/Command, Handler, Validator và Query/Handler/DTO. ValidateAsync tại application boundary; domain kiểm tra invariant; query AsNoTracking/projection/sort whitelist/pagination.
-5. API map endpoint -> handler, kiểm tra JWT + role/department/version; audit + outbox cùng local SQL transaction. Không gọi mạng trong SQL transaction kéo dài.
-6. Tạo Code First migration (ví dụ dưới), review script, apply bằng migration identity có DDL; runtime user không có DDL. Không gọi EnsureCreated hoặc Migrate tự động từ mọi replica.
-7. Thêm test có ý nghĩa, cập nhật OpenAPI, checklist và evidence. Không đánh dấu PASS bằng sự tồn tại của class.
+[Team Responsibilities](docs/development/TEAM-RESPONSIBILITIES.md) là bảng mẫu chưa có tên hoặc phân công được xác nhận. Điền thành viên/service/trạng thái/evidence thực, không tự bịa đóng góp.
+
+## Trạng thái và kiểm thử
+
+| Phần | Thực tế |
+|---|---|
+| 25 project, layer structure, DI/config/errors | Implemented foundation |
+| 5 DB, 47 bảng ứng dụng + 5 history | Implemented; SQL Server LocalDB đã kiểm chứng |
+| Health/Gateway/Swagger/gRPC diagnostic | Implemented transport/scaffold |
+| JWT validation / login và refresh | Middleware có / issuance, rotation Planned |
+| CRUD/search/filter/sort/page/role/department | Planned; resource GET 401 hoặc 501 |
+| Scheduler/SLA/Notification workers | Skeleton, disabled mặc định |
+| Outbox/Inbox processing/retry/email/SignalR/E2E | Planned |
+| Dockerfiles/Compose | Có cấu hình; Engine runtime còn BLOCKED khi audit |
 
 ```sh
-dotnet tool restore
-dotnet ef migrations add DescribeYourChange --project src/Services/Equipment/Equipment.Infrastructure --startup-project src/Services/Equipment/Equipment.Api --context EquipmentDbContext --output-dir Persistence/Migrations
-dotnet ef migrations script --idempotent --project src/Services/Equipment/Equipment.Infrastructure --startup-project src/Services/Equipment/Equipment.Api --context EquipmentDbContext
+dotnet test MedEquipSLA.sln -c Release --no-build
 ```
 
-`InitialCreate` đã tồn tại trong mỗi service; chỉ tạo migration tên mới khi thay đổi model. `ConnectionStrings__Database` dùng env local cho EF design-time factory; factory kiểm tra đúng tên database của service. Không copy password vào tài liệu, log hoặc PR. Khi chạy API native, đặt biến này riêng cho đúng service; không dùng cùng connection string cho cả năm service.
+Hiện **không có .NET test project**; exit 0 không phải test coverage. SQL checks thực trong `tests/database/`. Xem [verification mới nhất](docs/assignment-compliance/DOCUMENTATION-VERIFICATION.md), [DB evidence](docs/database/VERIFICATION.md), [GitHub Actions](https://github.com/chanqua321/MedEquipSLA/actions). Không dùng badge PASS cố định.
 
-## Git và đóng góp
+## Troubleshooting
 
-Xem [Git workflow](docs/development/GIT-WORKFLOW.md), [phân công mẫu](docs/development/TEAM-RESPONSIBILITIES.md). Tạo branch feature/<issue>-<scope>, commit nhỏ, push branch, mở PR và đính kèm build/test evidence; không push thẳng main. Không tự bịa tên thành viên hoặc số liệu đóng góp.
+| Triệu chứng | Kiểm tra / xử lý |
+|---|---|
+| SDK không khớp | `dotnet --info`, cài SDK global.json; không đổi target tùy máy |
+| Docker daemon/pipe unavailable | Khởi động Linux Engine; native probe vẫn dùng được; deployment chưa kiểm chứng |
+| SQL login failed / thiếu bảng | Env đúng DB, credential đúng; bootstrap không rotate login cũ; apply migration riêng |
+| Swagger 404 | Development launch profile/đúng port; Gateway không có Swagger riêng |
+| Resource 401 / 501 | JWT guard / handler skeleton; không phải DB bị mất dữ liệu |
+| gRPC Unavailable | Equipment cổng 5103 HTTP/2 và client address; cổng REST 5102 không thay gRPC |
+| Worker không tạo việc | Chưa triển khai nghiệp vụ; bật switch chỉ log tick |
+| Port bị chiếm | Dừng process của mình hoặc đổi config Gateway/gRPC/Web nhất quán |
 
-GitHub private chỉ tạo/push khi có kết nối tài khoản và quyền phù hợp. Evidence ghi rõ remote/commit thực tế; repo local không được mô tả như repo GitHub đã tạo.
-
-## End-to-end demo sau khi hoàn thiện
-
-1. Admin đăng nhập, tạo khoa và thiết bị.
-2. Staff báo sự cố trong khoa; Incident REST gọi Equipment gRPC, commit Incident + Outbox.
-3. Dispatcher phát Redis; Notification consumer commit Inbox + Notification, Equipment cập nhật projection.
-4. Technician nhận/xử lý; Admin nghiệm thu/Close; đối soát SLA và trạng thái thiết bị.
-5. Cho Maintenance scheduler/SLA scanner chạy thật và minh họa deadline, duplicate event, broker recovery, gRPC timeout và Department isolation.
-
-Đây là kịch bản tương lai, chưa chạy trong scaffold. README từng service liên kết hướng dẫn chung và ghi phần trách nhiệm còn thiếu.
+Luồng demo đích và các quyết định Delete/CRUD, authorization freshness còn mở nằm trong [Business Documentation](docs/BUSINESS-DOCUMENTATION.md).

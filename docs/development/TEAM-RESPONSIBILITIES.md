@@ -5,7 +5,7 @@ Chưa có danh sách thành viên được cung cấp. Các vai trò dưới đ�
 | Tên thành viên | Service/phần phụ trách đề xuất | Nhiệm vụ | Trạng thái | Minh chứng đóng góp |
 |---|---|---|---|---|
 | Chưa điền | Identity | JWT/refresh, roles, department/AuthorizationVersion, audit | Chưa phân công | Chưa có |
-| Chưa điền | Equipment | Entity/CRUD, gRPC, lifecycle registration/reconciliation | Chưa phân công | Chưa có |
+| Chưa điền | Equipment | Domain behavior/CRUD, gRPC, lifecycle registration/reconciliation | Chưa phân công | Chưa có |
 | Chưa điền | Maintenance | Schedule/WorkOrder CQRS, scheduler/reminders, producer | Chưa phân công | Chưa có |
 | Chưa điền | Incident | Incident CQRS, versioned SLA policy, scanner, producer | Chưa phân công | Chưa có |
 | Chưa điền | Notification | Redis consumer/Inbox/retry, email, SignalR | Chưa phân công | Chưa có |

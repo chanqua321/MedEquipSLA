@@ -1,5 +1,7 @@
 # Scaffold verification — 23/10/2026
 
+> Snapshot lịch sử của scaffold baseline f4d0f24. Những dòng chưa migration/chưa mapping bên dưới mô tả thời điểm baseline, đã được thay bằng [database verification](../database/VERIFICATION.md) sau Code First. Audit hiện tại ở [Documentation Verification](DOCUMENTATION-VERIFICATION.md); không dùng snapshot này để suy ra database hiện chưa có bảng.
+
 Đây là kết quả kiểm tra foundation hiện tại, **không phải nghiệm thu Final Assignment**. [Compliance Matrix](./PRN232-CHECKLIST.md) giữ nguyên các phần nghiệp vụ còn thiếu.
 
 ## Nguồn yêu cầu trước khởi tạo

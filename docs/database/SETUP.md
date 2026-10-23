@@ -14,6 +14,8 @@ Mỗi DB có thêm `__EFMigrationsHistory`: tổng 47 bảng ứng dụng, 52 b�
 
 ## Môi trường team: SQL Server 2022 CU27
 
+[Environment Setup](../development/ENVIRONMENT-SETUP.md) có template provision deployment login theo owner và cách nhập connection qua env mà không lưu credential vào command history.
+
 1. Cài SDK theo `global.json`, chạy `dotnet tool restore`, `dotnet restore MedEquipSLA.sln --locked-mode`, `dotnet build MedEquipSLA.sln`.
 2. Copy `.env.example` thành `.env`, đặt password riêng, chạy `docker compose up -d sqlserver redis db-bootstrap`. Bootstrap tạo 5 DB và 5 runtime login, chưa tạo bảng ứng dụng.
 3. Người quản trị provision deployment identity riêng trên từng DB, đủ quyền DDL và seed/migration data. Runtime chỉ có datareader/datawriter; không dùng runtime credential để migrate, không cấp quyền quản trị server cho app.
