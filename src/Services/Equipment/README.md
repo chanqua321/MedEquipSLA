@@ -69,7 +69,7 @@ curl -i http://localhost:5102/api/equipment
 dotnet build src/Services/Equipment/Equipment.Api -c Release
 ```
 
-SQL trên LocalDB dev/test đã migrate: `pwsh ./scripts/Test-Databases.ps1 -Service Equipment`; fixtures rollback. `dotnet test MedEquipSLA.sln -c Release --no-build` hiện không có test project, không đại diện coverage. [gRPC guide](../../../docs/development/GRPC.md) có diagnostic/CLI checks; [latest verification](../../../docs/assignment-compliance/DOCUMENTATION-VERIFICATION.md) có evidence/giới hạn.
+SQL trên LocalDB dev/test đã migrate: `pwsh ./scripts/Test-Databases.ps1 -Service Equipment`; fixtures rollback. `dotnet test MedEquipSLA.sln -c Release --no-build` chạy model tests; có SQLSERVER_TEST_CONNECTION thì chạy thêm runtime EF tests trên DB mới riêng. Xem [EF integration tests](../../../tests/MedEquipSLA.Database.IntegrationTests/README.md). Runtime skip không được báo PASS. [gRPC guide](../../../docs/development/GRPC.md) có diagnostic/CLI checks; [latest verification](../../../docs/assignment-compliance/DOCUMENTATION-VERIFICATION.md) có evidence/giới hạn.
 
 ## Development Guidelines
 

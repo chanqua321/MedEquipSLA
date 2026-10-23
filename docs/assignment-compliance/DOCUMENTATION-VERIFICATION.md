@@ -1,5 +1,7 @@
 # Documentation/foundation audit — 23/10/2026
 
+> Snapshot của commit 3714a87. Từ lượt [database finalization](../database/FINALIZATION-AUDIT.md), solution có 26 projects và .NET database tests; các dòng “0 test projects” bên dưới là kết quả ở thời điểm snapshot. Repo đã được owner yêu cầu đổi Public sau snapshot.
+
 Phạm vi: tài liệu, README, Git hygiene, build và các thành phần foundation hiện có. Không nghiệm thu Final Assignment. BR v1.0 gốc vẫn Proposed; ERD/D1–D4 Approved; Code First schema đã tạo. Kết quả sẽ được ghi theo lệnh thực chạy trong lượt audit này.
 
 ## Audit source

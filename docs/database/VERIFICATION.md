@@ -42,3 +42,7 @@ Chạy lại từ root bằng `./scripts/Test-Databases.ps1`. SQL nguồn nằm 
 - Cross-service registration/reconciliation, SLA outcome cuối cùng, calibration rework và overlapping SLA policy intervals cần Application-level transaction/protocol tests; SQL constraints chỉ bảo vệ phần đã nêu. Schema tồn tại không chứng minh producer/consumer hoặc scheduler hoạt động.
 
 Các giới hạn này được giữ IN PROGRESS/BLOCKED trong [PRN232 checklist](../assignment-compliance/PRN232-CHECKLIST.md). Chỉ EF Core, SQL Server và database migrations có evidence đủ cho tiêu chí tương ứng ở giai đoạn này.
+
+## Bổ sung EF/migration cycle
+
+Lượt [finalization audit](FINALIZATION-AUDIT.md) thêm .NET tests cho model, exact SQL indexes/filters, check metadata, Up→0→Up, EF concurrency và transaction rollback. Xem [cách chạy](../../tests/MedEquipSLA.Database.IntegrationTests/README.md). Schema/InitialCreate của lượt trước được giữ nguyên.

@@ -24,6 +24,8 @@
 - [gRPC guide](development/GRPC.md), [Messaging guide](development/MESSAGING.md), [Team Responsibilities](development/TEAM-RESPONSIBILITIES.md).
 - Service README: [Identity](../src/Services/Identity/README.md), [Equipment](../src/Services/Equipment/README.md), [Maintenance](../src/Services/Maintenance/README.md), [Incident](../src/Services/Incident/README.md), [Notification](../src/Services/Notification/README.md).
 
+- [BR D1–D4 Approved addendum](business/BUSINESS-RULES-D1-D4-APPROVED.md), [database finalization audit](database/FINALIZATION-AUDIT.md), [EF integration tests](../tests/MedEquipSLA.Database.IntegrationTests/README.md).
+
 ## Học phần và evidence
 
 - [PRN232 Final Assignment](assignment-compliance/PRN232%20-%20Final%20Assignment.pdf): nguồn yêu cầu học phần chính thức.

@@ -8,6 +8,8 @@ Thứ tự nguồn: [đề PRN232](assignment-compliance/PRN232%20-%20Final%20As
 
 **Thực tế hiện tại:** đã có schema, migration và constraint tests; luồng nghiệp vụ bên dưới còn Planned. Các entity là persistence shape có private setters, chưa có factory/domain transitions hoàn chỉnh. Chỉ health/Gateway/Swagger/gRPC probe đã chạy; login, CRUD, jobs, events/email/SignalR và E2E chưa chạy nghiệp vụ.
 
+[Phụ lục BR D1–D4 đã duyệt](business/BUSINESS-RULES-D1-D4-APPROVED.md) đồng bộ các điều chỉnh vào bộ BR; D3 protocol vẫn BLOCKED ở phần fencing/abort/snapshot cụ thể.
+
 ## 2. Vai trò, khoa và quyền
 
 | Vai trò | Được phép theo nghiệp vụ đích | Giới hạn |

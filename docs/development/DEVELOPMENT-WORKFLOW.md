@@ -48,6 +48,6 @@ dotnet build MedEquipSLA.sln -c Release --no-restore
 dotnet test MedEquipSLA.sln -c Release --no-build
 ```
 
-Hiện không có .NET test project; tạo test có ý nghĩa cho feature đầu tiên, không gọi exit 0 hiện tại là test coverage. SQL checks: `pwsh ./scripts/Test-Databases.ps1 -Service Equipment` trên LocalDB dev/test đã migrate; fixtures rollback. Frontend: `npm ci`, `npm run build` trong src/Web. Không dùng EF InMemory để kết luận rowversion/FK/SQL transaction đúng.
+Đã có Database.IntegrationTests: 5 model + 8 SQL runtime cases; thiếu SQLSERVER_TEST_CONNECTION thì SQL cases Skip/BLOCKED. [Cách chạy](../../tests/MedEquipSLA.Database.IntegrationTests/README.md). Các feature nghiệp vụ vẫn cần acceptance tests riêng, không suy từ schema tests. SQL checks: `pwsh ./scripts/Test-Databases.ps1 -Service Equipment` trên LocalDB dev/test đã migrate; fixtures rollback. Frontend: `npm ci`, `npm run build` trong src/Web. Không dùng EF InMemory để kết luận rowversion/FK/SQL transaction đúng.
 
 Review cases: role/department/assignment, invalid input/state, stale version, repeated request/event, dependency timeout, rollback/commit Outbox, restart worker. Không mirror implementation bằng tests hình thức. Update README/status/PRN232 matrix bằng evidence thực, ghi rõ phần chưa chạy. Push feature và mở PR, không force push main.

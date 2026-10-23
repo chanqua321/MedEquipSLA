@@ -4,7 +4,7 @@ Mục tiêu onboarding là chạy **những phần hiện có**, hiểu giới h
 
 ## 1. Clone và build
 
-Yêu cầu quyền repo Private, Git, SDK 10.0.402 và Node 24.19.0. [Environment Setup](ENVIRONMENT-SETUP.md) mô tả tùy chọn SQL/Docker/PowerShell.
+Repo hiện Public; cần Git, SDK 10.0.402 và Node 24.19.0. [Environment Setup](ENVIRONMENT-SETUP.md) mô tả tùy chọn SQL/Docker/PowerShell.
 
 ```sh
 git clone https://github.com/chanqua321/MedEquipSLA.git
@@ -58,6 +58,8 @@ docker compose up -d sqlserver redis db-bootstrap
 
 Các lệnh trên yêu cầu `.env` đã điền. Bootstrap tạo DB/runtime users; apply migration riêng trước full app. Chạy `pwsh ./scripts/Update-Databases.ps1` với deployment connection env đã thiết lập, rồi `docker compose up -d --build`. Docker Engine chưa được kiểm chứng chạy thành công trong audit hiện tại, xem [evidence](../assignment-compliance/DOCUMENTATION-VERIFICATION.md).
 
-## 5. Bắt đầu công việc
+## 5. Kiểm thử EF và bắt đầu công việc
+
+[EF integration tests](../../tests/MedEquipSLA.Database.IntegrationTests/README.md) kiểm tra model, migration Up/Down/Up, SQL constraints/indexes và rowversion/transaction thật. Thiếu test connection thì runtime Skip/BLOCKED.
 
 Đọc [Business](../BUSINESS-DOCUMENTATION.md) → [API](../API-DOCUMENTATION.md) → [Database](../DATABASE-DOCUMENTATION.md), README service phụ trách. Tạo feature branch theo [Git workflow](GIT-WORKFLOW.md), làm một use case theo [Development Workflow](DEVELOPMENT-WORKFLOW.md). Tên thành viên/nhiệm vụ điền tại [Team Responsibilities](TEAM-RESPONSIBILITIES.md).

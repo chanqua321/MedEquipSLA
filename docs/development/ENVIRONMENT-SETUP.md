@@ -4,7 +4,7 @@
 
 | Công cụ | Khi cần / source version |
 |---|---|
-| Git và GitHub access | Clone/push repo Private, credential manager hoặc SSH; không token trong remote |
+| Git và GitHub access | Clone repo Public; push cần quyền, credential manager hoặc SSH; không token trong remote |
 | .NET SDK | 10.0.402 theo global.json, target net10.0; local dotnet-ef 10.0.13 qua dotnet tool restore |
 | Node/npm | Node 24.19.0 theo src/Web/.node-version, npm ci theo package-lock |
 | Docker Desktop/Engine + Compose | Linux containers, build/run môi trường chung |
