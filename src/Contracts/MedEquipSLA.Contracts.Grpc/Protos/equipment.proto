@@ -1,0 +1,11 @@
+syntax = "proto3";
+package medequip.equipment.v1;
+option csharp_namespace = "MedEquipSLA.Contracts.Grpc.Equipment.V1";
+service EquipmentLookup {
+  rpc GetServiceInfo (ServiceInfoRequest) returns (ServiceInfoReply);
+  rpc GetEquipment (GetEquipmentRequest) returns (EquipmentReply);
+}
+message ServiceInfoRequest {}
+message ServiceInfoReply { string service = 1; string phase = 2; }
+message GetEquipmentRequest { string equipment_id = 1; }
+message EquipmentReply { string equipment_id = 1; string asset_code = 2; string department_id = 3; string status = 4; int64 aggregate_version = 5; }

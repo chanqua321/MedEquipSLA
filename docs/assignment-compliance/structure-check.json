@@ -1,0 +1,11 @@
+{
+  "projectCount": 25,
+  "dbContextCount": 5,
+  "acyclic": true,
+  "independentDomains": true,
+  "errors": [],
+  "stagedFileCount": 192,
+  "apiResourcesDelegateToApplicationHandlers": true,
+  "academicChecklistRows": 55,
+  "academicPassCount": 0
+}

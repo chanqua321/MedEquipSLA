@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+    <PackageReference Include="Grpc.Net.ClientFactory" />
+  </ItemGroup>
+  <ItemGroup><Protobuf Include="Protos/equipment.proto" GrpcServices="Both" /></ItemGroup>
+</Project>

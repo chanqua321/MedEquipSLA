@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../Equipment.Application/Equipment.Application.csproj" />
+    <ProjectReference Include="../Equipment.Infrastructure/Equipment.Infrastructure.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/MedEquipSLA.Hosting/MedEquipSLA.Hosting.csproj" />
+    <ProjectReference Include="../../../Contracts/MedEquipSLA.Contracts.Grpc/MedEquipSLA.Contracts.Grpc.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+    <PackageReference Include="Grpc.AspNetCore" />
+  </ItemGroup>
+
+</Project>

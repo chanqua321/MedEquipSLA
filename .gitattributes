@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.jpg binary
+
+# Markdown hard line breaks in the user-provided source are intentional.
+docs/business/BUSINESS-RULES-v1.0-PROPOSED.md whitespace=-blank-at-eol
