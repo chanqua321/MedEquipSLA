@@ -74,7 +74,7 @@ Source file/project là đường dẫn tương đối root repo; `*` thể hi�
 | PROJ-03 | Maintenance scheduler and SLA scanner with idempotency/logging. | Hosted skeleton only; tick không phải job | */Workers | Deadline + unique key + concurrent workers | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | PROJ-04 | Authorization and Department Isolation. | JWT guard only; business scopes/version freshness pending | Identity; docs/business/REVIEW-v1.0.md | AC-01/02, list/detail/export/SignalR | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
 | PROJ-05 | Validation, Swagger, DI, logging, exception handling. | Validator example/DI/Swagger/ProblemDetails | src/BuildingBlocks/MedEquipSLA.Hosting; */Application | Failure paths + field validation + logs | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | IN PROGRESS |
-| PROJ-06 | Source control and Private GitHub repository if authorized. | Local commit; chưa có CLI/kết nối GitHub xác thực | docs/development/GIT-WORKFLOW.md | Private visibility + remote + push verified | Chỉ scaffold/source; chưa có bằng chứng nghiệp vụ | BLOCKED |
+| PROJ-06 | Source control and Private GitHub repository if authorized. | Đã tạo Private repo và push main qua Git Credential Manager | docs/development/GIT-WORKFLOW.md; README.md | Private visibility + remote + push verified | https://github.com/chanqua321/MedEquipSLA; baseline f4d0f24863807f12d63d1f5f7c531094164b2d7d; nghiệp vụ vẫn chỉ scaffold | IN PROGRESS |
 
 ## Assessment weights (PDF section 7)
 
@@ -82,4 +82,4 @@ Architecture/design 20%; REST 20%; Background Job 10%; Broker 15%; gRPC 15%; Doc
 
 ## Evidence policy
 
-Mỗi PR cập nhật status + evidence gắn commit/PR/test output thực. Skeleton generated code, health 200, Swagger JSON hoặc gRPC GetServiceInfo không chứng minh CRUD/JWT login, SLA, producer/consumer hay business GetEquipment đã đạt. CI đã có file workflow nhưng chưa chạy trên GitHub khi chưa có remote; không ghi CI xanh như kết quả đã có.
+Mỗi PR cập nhật status + evidence gắn commit/PR/test output thực. Skeleton generated code, health 200, Swagger JSON hoặc gRPC GetServiceInfo không chứng minh CRUD/JWT login, SLA, producer/consumer hay business GetEquipment đã đạt. GitHub đã nhận push và tạo CI runs; xem trạng thái thực tại [Actions](https://github.com/chanqua321/MedEquipSLA/actions). Không suy ra CI xanh chỉ từ việc push thành công.

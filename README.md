@@ -1,5 +1,7 @@
 # MedEquipSLA — PRN232 foundation
 
+Repository: [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA) — **Private**.
+
 **Giai đoạn: scaffold, chưa hoàn thành Final Assignment.** Luồng đăng nhập, CRUD nghiệp vụ, quét hạn/SLA, Outbox/Inbox và consumer nghiệp vụ chưa triển khai. API tài nguyên hiện trả 401 nếu thiếu JWT; khi qua auth vẫn trả 501. Không có dữ liệu giả được mô tả như tính năng đã chạy.
 
 ## Nguồn yêu cầu và trạng thái

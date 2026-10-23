@@ -35,7 +35,8 @@ Source user cung cấp và bản copy trong repository được giữ nguyên; B
 | Redis app producer/consumer / Outbox/Inbox | NOT IMPLEMENTED | Adapter/type/skeleton không phải runtime business proof |
 | Maintenance/SLA jobs | NOT IMPLEMENTED | Hosted services disabled; bật chỉ log tick, không có nghiệp vụ |
 | Secrets/.gitignore | PASS static | Không stage .env/private key/build cache; git check-ignore xác nhận env, PEM và node_modules bị ignore |
-| GitHub Private repository / push / CI | BLOCKED | gh CLI chưa có, GitHub plugin chưa cài/kết nối; không có remote/URL được xác minh |
+| GitHub Private repository / push | PASS repository operation | Đã xác minh tài khoản qua Git Credential Manager, tạo Private repo và push main; URL ở phần Git evidence |
+| GitHub Actions | RUNNING WHEN CHECKED | Push tạo CI run; không đồng nghĩa CI hoặc nghiệp vụ đã đạt |
 
 15 native assertions được lưu tại [native-smoke-results.json](./native-smoke-results.json). Process thử nghiệm đã được dừng sau kiểm tra. Các lệnh chạy lại được ghi trong README và gRPC guide; không đòi hỏi đường dẫn SDK cá nhân trong source.
 
@@ -51,10 +52,10 @@ Restore ban đầu phát hiện System.Security.Cryptography.Pkcs 9.0.11 qua dep
 - Outbox/Inbox types chưa map vào EF; consumer, retry/DLQ, jobs, email và SignalR chưa implement.
 - Chưa tạo business migrations vì model còn phải đồng bộ BR review, không dùng bootstrap SQL làm bằng chứng hoàn thành Code First.
 - Dockerfile/Compose chưa chạy thực; manifest/config validation không thay image build hoặc deployment proof.
-- CI workflow có source, chưa có GitHub run. Không có GitHub URL được bịa hoặc suy ra từ Git author.
+- CI workflow đã được GitHub khởi chạy sau push; kết quả theo từng commit nằm tại Actions, không suy ra thành công từ kết quả local.
 
 ## Git evidence
 
-Commit chứa tài liệu này là scaffold baseline. Dùng `git rev-parse HEAD` và `git status --short` để lấy hash/trạng thái hiện tại; hash cuối được báo trong phản hồi cho người dùng. Chưa có remote được push.
+Commit chứa tài liệu này là scaffold baseline. Dùng `git rev-parse HEAD` và `git status --short` để lấy hash/trạng thái hiện tại; hash cuối được báo trong phản hồi cho người dùng. Repository Private: [chanqua321/MedEquipSLA](https://github.com/chanqua321/MedEquipSLA). Remote origin dùng HTTPS qua Git Credential Manager, không chứa token. Baseline scaffold f4d0f24863807f12d63d1f5f7c531094164b2d7d đã được push và đối chiếu bằng git ls-remote. [GitHub Actions](https://github.com/chanqua321/MedEquipSLA/actions).
 
 Static structure evidence: [structure-check.json](./structure-check.json). Không chạy integration tests SQL/Redis khi Docker Engine không khả dụng.
