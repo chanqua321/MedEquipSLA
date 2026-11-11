@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Maintenance": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5104",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true",
+        "ConnectionStrings__Database": "Server=(localdb)\\MSSQLLocalDB;Database=MedEquip_Maintenance;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+      }
+    },
+    "Maintenance-SqlServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5104",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true"
+      }
+    }
+  }
+}
