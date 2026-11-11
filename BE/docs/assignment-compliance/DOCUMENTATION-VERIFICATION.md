@@ -54,8 +54,8 @@ Remote dự kiến/đã đối chiếu: https://github.com/chanqua321/MedEquipSL
 
 ### Cập nhật
 
-- [.github/workflows/ci.yml](../../.github/workflows/ci.yml)
-- [.gitignore](../../.gitignore)
+- [.github/workflows/ci.yml](../../../.github/workflows/ci.yml)
+- [.gitignore](../../../.gitignore)
 - [README.md](../../README.md)
 - [docs/architecture/C0-System-Context.md](../architecture/C0-System-Context.md)
 - [docs/architecture/C1-Container.md](../architecture/C1-Container.md)
