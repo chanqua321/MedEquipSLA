@@ -1,0 +1,213 @@
+name: medequip-sla
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Fill MSSQL_SA_PASSWORD in .env}
+      MSSQL_MEMORY_LIMIT_MB: "2048"
+    ports: ["127.0.0.1:14333:1433"]
+    volumes: ["sql-data:/var/opt/mssql"]
+    networks: [medequip]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$$MSSQL_SA_PASSWORD" -C -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+  redis:
+    image: redis:8.2.10-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    ports: ["127.0.0.1:6379:6379"]
+    volumes: ["redis-data:/data"]
+    networks: [medequip]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  db-bootstrap:
+    image: mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04
+    depends_on:
+      sqlserver: {condition: service_healthy}
+    environment:
+      SQLCMDPASSWORD: ${MSSQL_SA_PASSWORD:?Fill MSSQL_SA_PASSWORD in .env}
+      IDENTITY_DB_PASSWORD: ${IDENTITY_DB_PASSWORD:?Fill IDENTITY_DB_PASSWORD in .env}
+      EQUIPMENT_DB_PASSWORD: ${EQUIPMENT_DB_PASSWORD:?Fill EQUIPMENT_DB_PASSWORD in .env}
+      MAINTENANCE_DB_PASSWORD: ${MAINTENANCE_DB_PASSWORD:?Fill MAINTENANCE_DB_PASSWORD in .env}
+      INCIDENT_DB_PASSWORD: ${INCIDENT_DB_PASSWORD:?Fill INCIDENT_DB_PASSWORD in .env}
+      NOTIFICATION_DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD:?Fill NOTIFICATION_DB_PASSWORD in .env}
+    entrypoint: ["/opt/mssql-tools18/bin/sqlcmd"]
+    command: ["-S", "sqlserver", "-U", "sa", "-C", "-b", "-i", "/bootstrap/create-databases.sql"]
+    volumes: ["./infrastructure/sql/create-databases.sql:/bootstrap/create-databases.sql:ro"]
+    networks: [medequip]
+    restart: "no"
+  identity:
+    build:
+      context: .
+      dockerfile: src/Services/Identity/Identity.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Kestrel__Endpoints__Rest__Url: http://0.0.0.0:8080
+      Identity__RecipientLookupKey: ${NOTIFICATION_RECIPIENT_LOOKUP_KEY:-}
+      Jwt__PublicKeyPath: /run/keys/public.pem
+      Jwt__PrivateKeyPath: /run/keys/private.pem
+      Identity__DataProtectionPath: /var/lib/medequip-identity/keys
+      Identity__PublicWebAddress: ${PUBLIC_WEB_ADDRESS:-http://localhost:5173}
+      Equipment__Address: http://equipment:8080
+      ConnectionStrings__Database: "Server=sqlserver,1433;Database=MedEquip_Identity;User Id=medequip_identity_app;Password=${IDENTITY_DB_PASSWORD:?Fill IDENTITY_DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Redis: redis:6379,abortConnect=false
+      Workers__Enabled: "true"
+    ports: ["127.0.0.1:5101:8080"]
+    volumes: ["./.secrets/jwt:/run/keys:ro", "identity-keys:/var/lib/medequip-identity/keys"]
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    networks: [medequip]
+  db-migrate:
+    profiles: [tools]
+    image: mcr.microsoft.com/mssql/server:2022-CU27-ubuntu-22.04
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+    environment:
+      SQLCMDPASSWORD: ${MSSQL_SA_PASSWORD:?Fill MSSQL_SA_PASSWORD in .env}
+    entrypoint: [/bin/bash, -ec]
+    command:
+      - >-
+        for owner in Identity Equipment Maintenance Incident Notification; do
+        /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -C -b -d "MedEquip_$$owner" -i "/migrations/$$owner.sql";
+        done
+    volumes: ["./docs/database/migrations:/migrations:ro"]
+    networks: [medequip]
+    restart: "no"
+  equipment:
+    build:
+      context: .
+      dockerfile: src/Services/Equipment/Equipment.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Identity__Address: http://identity:8080
+      ConnectionStrings__Database: "Server=sqlserver,1433;Database=MedEquip_Equipment;User Id=medequip_equipment_app;Password=${EQUIPMENT_DB_PASSWORD:?Fill EQUIPMENT_DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Redis: redis:6379,abortConnect=false
+      Grpc__IncidentRegistrationKey: ${INCIDENT_REGISTRATION_KEY:-}
+      Jwt__PublicKeyPath: /run/keys/public.pem
+      Grpc__MaintenanceRegistrationKey: ${MAINTENANCE_REGISTRATION_KEY:-}
+      Grpc__MaintenanceWorkOrderKey: ${MAINTENANCE_WORKORDER_KEY:-}
+      Grpc__RetirementMaintenanceKey: ${RETIREMENT_MAINTENANCE_KEY:-}
+      Grpc__RetirementIncidentKey: ${RETIREMENT_INCIDENT_KEY:-}
+      Workers__Enabled: "true"
+      Kestrel__Endpoints__Rest__Url: http://0.0.0.0:8080
+      Kestrel__Endpoints__Rest__Protocols: Http1
+      Kestrel__Endpoints__Grpc__Url: http://0.0.0.0:8081
+      Kestrel__Endpoints__Grpc__Protocols: Http2
+    ports: ["127.0.0.1:5102:8080", "127.0.0.1:5103:8081"]
+    volumes: ["./.secrets/jwt/public.pem:/run/keys/public.pem:ro"]
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    networks: [medequip]
+  maintenance:
+    build:
+      context: .
+      dockerfile: src/Services/Maintenance/Maintenance.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Identity__Address: http://identity:8080
+      Identity__RecipientLookupKey: ${NOTIFICATION_RECIPIENT_LOOKUP_KEY:-}
+      ConnectionStrings__Database: "Server=sqlserver,1433;Database=MedEquip_Maintenance;User Id=medequip_maintenance_app;Password=${MAINTENANCE_DB_PASSWORD:?Fill MAINTENANCE_DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Redis: redis:6379,abortConnect=false
+      Workers__Enabled: "true"
+      Grpc__EquipmentAddress: http://equipment:8081
+      Grpc__MaintenanceRegistrationKey: ${MAINTENANCE_REGISTRATION_KEY:-}
+      Grpc__MaintenanceWorkOrderKey: ${MAINTENANCE_WORKORDER_KEY:-}
+      Grpc__RetirementSourceKey: ${RETIREMENT_MAINTENANCE_KEY:-}
+      Jwt__PublicKeyPath: /run/keys/public.pem
+      Workers__WorkOrderGeneration__Enabled: "true"
+      Workers__Retirement__Enabled: "true"
+    ports: ["127.0.0.1:5104:8080"]
+    volumes: ["./.secrets/jwt/public.pem:/run/keys/public.pem:ro"]
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    networks: [medequip]
+  incident:
+    build:
+      context: .
+      dockerfile: src/Services/Incident/Incident.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Identity__Address: http://identity:8080
+      ConnectionStrings__Database: "Server=sqlserver,1433;Database=MedEquip_Incident;User Id=medequip_incident_app;Password=${INCIDENT_DB_PASSWORD:?Fill INCIDENT_DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Redis: redis:6379,abortConnect=false
+      Grpc__IncidentRegistrationKey: ${INCIDENT_REGISTRATION_KEY:-}
+      Grpc__RetirementSourceKey: ${RETIREMENT_INCIDENT_KEY:-}
+      Jwt__PublicKeyPath: /run/keys/public.pem
+      Workers__Retirement__Enabled: "true"
+      Workers__Enabled: "true"
+      Grpc__EquipmentAddress: http://equipment:8081
+    ports: ["127.0.0.1:5105:8080"]
+    volumes: ["./.secrets/jwt/public.pem:/run/keys/public.pem:ro"]
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    networks: [medequip]
+  notification:
+    build:
+      context: .
+      dockerfile: src/Services/Notification/Notification.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: "8080"
+      Identity__Address: http://identity:8080
+      Identity__RecipientLookupKey: ${NOTIFICATION_RECIPIENT_LOOKUP_KEY:-}
+      ConnectionStrings__Database: "Server=sqlserver,1433;Database=MedEquip_Notification;User Id=medequip_notification_app;Password=${NOTIFICATION_DB_PASSWORD:?Fill NOTIFICATION_DB_PASSWORD in .env};Encrypt=True;TrustServerCertificate=True"
+      ConnectionStrings__Redis: redis:6379,abortConnect=false
+      Workers__Enabled: "true"
+      Jwt__PublicKeyPath: /run/keys/public.pem
+      Email__Enabled: ${EMAIL_ENABLED:-false}
+      Email__Host: ${SMTP_HOST:-}
+      Email__Port: ${SMTP_PORT:-587}
+      Email__From: ${SMTP_FROM:-}
+      Email__EnableSsl: ${SMTP_ENABLE_SSL:-true}
+      Email__Username: ${SMTP_USERNAME:-}
+      Email__Password: ${SMTP_PASSWORD:-}
+    ports: ["127.0.0.1:5106:8080"]
+    volumes: ["./.secrets/jwt/public.pem:/run/keys/public.pem:ro"]
+    depends_on:
+      db-bootstrap: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    networks: [medequip]
+  gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/MedEquipSLA.Gateway/Dockerfile
+    environment:
+      ASPNETCORE_HTTP_PORTS: "8080"
+      ReverseProxy__Clusters__identity__Destinations__primary__Address: http://identity:8080
+      ReverseProxy__Clusters__equipment__Destinations__primary__Address: http://equipment:8080
+      ReverseProxy__Clusters__maintenance__Destinations__primary__Address: http://maintenance:8080
+      ReverseProxy__Clusters__incident__Destinations__primary__Address: http://incident:8080
+      ReverseProxy__Clusters__notification__Destinations__primary__Address: http://notification:8080
+    ports: ["127.0.0.1:5100:8080"]
+    networks: [medequip]
+  web:
+    build:
+      context: .
+      dockerfile: src/Web/Dockerfile
+    ports: ["127.0.0.1:5173:80"]
+    depends_on: [gateway]
+    networks: [medequip]
+networks:
+  medequip:
+volumes:
+  sql-data:
+  redis-data:
+  identity-keys:

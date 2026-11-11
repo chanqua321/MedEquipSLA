@@ -1,0 +1,153 @@
+erDiagram
+    Departments {
+        Guid Id PK
+        string Code
+        string Name
+        bool IsActive
+        DateTimeOffset CreatedAtUtc
+        DateTimeOffset UpdatedAtUtc
+        Guid CreatedByUserId
+        Guid UpdatedByUserId
+        bytes RowVersion
+    }
+    EquipmentCategories {
+        Guid Id PK
+        string Code
+        string Name
+        string Description
+        bool IsActive
+        DateTimeOffset CreatedAtUtc
+        DateTimeOffset UpdatedAtUtc
+        Guid CreatedByUserId
+        Guid UpdatedByUserId
+        bytes RowVersion
+    }
+    EquipmentAssets {
+        Guid Id PK
+        string AssetCode
+        string SerialNumber
+        string Name
+        Guid CategoryId FK
+        Guid DepartmentId FK
+        string Manufacturer
+        string Model
+        string PurchasedOn
+        string WarrantyUntil
+        bool IsRetired
+        string OperationalStatus
+        DateTimeOffset RetiredAtUtc
+        Guid RetiredByUserId
+        string RetirementReason
+        long AggregateVersion
+        DateTimeOffset CreatedAtUtc
+        DateTimeOffset UpdatedAtUtc
+        Guid CreatedByUserId
+        Guid UpdatedByUserId
+        bytes RowVersion
+    }
+    Departments ||--o{ EquipmentAssets : DepartmentId
+    EquipmentCategories ||--o{ EquipmentAssets : CategoryId
+    EquipmentStateProjections {
+        string SourceService PK
+        Guid SourceAggregateId PK
+        Guid EquipmentId FK
+        string SourceStatus
+        bool IsBlocking
+        long SourceVersion
+        Guid LastEventId
+        DateTimeOffset LastOccurredAtUtc
+        DateTimeOffset AppliedAtUtc
+        bytes RowVersion
+    }
+    EquipmentAssets ||--o{ EquipmentStateProjections : EquipmentId
+    EquipmentUseRegistrations {
+        Guid Id PK
+        Guid EquipmentId FK
+        string SourceService
+        string ResourceType
+        Guid ResourceId
+        Guid SourceOperationId
+        string State
+        long SourceVersion
+        DateTimeOffset RegisteredAtUtc
+        DateTimeOffset ConfirmedAtUtc
+        DateTimeOffset ReleasedAtUtc
+        DateTimeOffset LastVerifiedAtUtc
+        bytes RowVersion
+        string RequestPayloadJson
+        bytes RequestHash
+        long FencingToken
+        string EquipmentNameSnapshot
+        string EquipmentCodeSnapshot
+        string DepartmentNameSnapshot
+        Guid DepartmentIdSnapshot
+        Guid CancelIntentId
+    }
+    EquipmentAssets ||--o{ EquipmentUseRegistrations : EquipmentId
+    EquipmentStatusHistories {
+        Guid Id PK
+        Guid EquipmentId FK
+        string ChangeKind
+        string FromStatus
+        string ToStatus
+        Guid FromDepartmentId FK
+        Guid ToDepartmentId FK
+        string FromDepartmentNameSnapshot
+        string ToDepartmentNameSnapshot
+        string Reason
+        Guid ActorUserId
+        Guid SourceEventId
+        DateTimeOffset ChangedAtUtc
+    }
+    EquipmentAssets ||--o{ EquipmentStatusHistories : EquipmentId
+    Departments o|--o{ EquipmentStatusHistories : FromDepartmentId
+    Departments o|--o{ EquipmentStatusHistories : ToDepartmentId
+    ReconciliationCheckpoints {
+        string SourceService PK
+        Guid SnapshotId
+        string SnapshotWatermark
+        string Cursor
+        string State
+        DateTimeOffset StartedAtUtc
+        DateTimeOffset LastCompletedAtUtc
+        string LastError
+        bytes RowVersion
+    }
+    EquipmentRetirementIntents {
+        Guid Id PK
+        bytes RowVersion
+        long RetirementEpoch
+        string RequiredSourcesJson
+        Guid RequestKey
+        bytes RequestHash
+        string Reason
+        Guid LastContinuedByUserId
+        DateTimeOffset LastContinuedAtUtc
+        string State
+        string LastContinueReason
+        DateTimeOffset CreatedAtUtc
+        int ContinueCount
+        DateTimeOffset CompletedAtUtc
+        DateTimeOffset CancelledAtUtc
+        Guid CancelRequestedByUserId
+        DateTimeOffset CancelRequestedAtUtc
+        string CancelReason
+        Guid ActorUserId
+        Guid EquipmentId FK
+        DateTimeOffset UpdatedAtUtc
+    }
+    EquipmentAssets ||--o{ EquipmentRetirementIntents : EquipmentId
+    RetirementSourceReceipts {
+        Guid IntentId PK
+        string SourceService PK
+        Guid CancelAcknowledgementId
+        int CoverageVersion
+        Guid EquipmentId FK
+        Guid ReadyProofId
+        DateTimeOffset ReceivedAtUtc
+        long RetirementEpoch
+        bytes RowVersion
+        long SourceGateVersion
+        string SourceState
+    }
+    EquipmentRetirementIntents ||--o{ RetirementSourceReceipts : IntentId_EquipmentId_RetirementEpoch

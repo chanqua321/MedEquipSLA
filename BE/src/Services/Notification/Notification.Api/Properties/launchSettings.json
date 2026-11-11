@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Notification": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5106",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true",
+        "ConnectionStrings__Database": "Server=(localdb)\\MSSQLLocalDB;Database=MedEquip_Notification;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+      }
+    },
+    "Notification-SqlServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5106",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true"
+      }
+    }
+  }
+}

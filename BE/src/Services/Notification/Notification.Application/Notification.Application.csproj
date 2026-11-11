@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Notification.Domain/Notification.Domain.csproj" />
+    <ProjectReference Include="../../../BuildingBlocks/MedEquipSLA.Application/MedEquipSLA.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+  </ItemGroup>
+
+</Project>

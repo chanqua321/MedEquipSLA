@@ -1,0 +1,15 @@
+{
+  "diagrams": 6,
+  "databaseTabs": 5,
+  "applicationTables": 47,
+  "historyTables": 5,
+  "applicationColumns": 515,
+  "foreignKeyConnectors": 29,
+  "edgeCrossings": 0,
+  "edgeOverlaps": 0,
+  "connectorsAttachedToColumns": 29,
+  "connectorsAttachedToEdges": 0,
+  "columnsMatchApprovedModel": true,
+  "format": "native editable mxGraph XML",
+  "fileSha256": "63dba2e227bb5d85eda9cbcd4c1723cdb37d40c0f5b7ef79b61e26ec3136e6bb"
+}

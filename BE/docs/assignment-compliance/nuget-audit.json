@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "parameters": "--vulnerable --include-transitive",
+  "sources": [
+    "https://api.nuget.org/v3/index.json"
+  ],
+  "projects": [
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/BuildingBlocks/MedEquipSLA.Application/MedEquipSLA.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/BuildingBlocks/MedEquipSLA.Hosting/MedEquipSLA.Hosting.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Contracts/MedEquipSLA.Contracts.Events/MedEquipSLA.Contracts.Events.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Contracts/MedEquipSLA.Contracts.Grpc/MedEquipSLA.Contracts.Grpc.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Gateway/MedEquipSLA.Gateway/MedEquipSLA.Gateway.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Equipment/Equipment.Api/Equipment.Api.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Equipment/Equipment.Application/Equipment.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Equipment/Equipment.Domain/Equipment.Domain.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Equipment/Equipment.Infrastructure/Equipment.Infrastructure.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Identity/Identity.Api/Identity.Api.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Identity/Identity.Application/Identity.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Identity/Identity.Domain/Identity.Domain.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Incident/Incident.Api/Incident.Api.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Incident/Incident.Application/Incident.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Incident/Incident.Domain/Incident.Domain.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Incident/Incident.Infrastructure/Incident.Infrastructure.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Maintenance/Maintenance.Api/Maintenance.Api.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Maintenance/Maintenance.Application/Maintenance.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Maintenance/Maintenance.Domain/Maintenance.Domain.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Maintenance/Maintenance.Infrastructure/Maintenance.Infrastructure.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Notification/Notification.Api/Notification.Api.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Notification/Notification.Application/Notification.Application.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Notification/Notification.Domain/Notification.Domain.csproj"
+    },
+    {
+      "path": "D:/PRN232/ASS/MedEquipSLA/src/Services/Notification/Notification.Infrastructure/Notification.Infrastructure.csproj"
+    }
+  ]
+}

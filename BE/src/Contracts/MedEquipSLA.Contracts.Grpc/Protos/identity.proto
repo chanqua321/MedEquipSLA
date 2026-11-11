@@ -1,0 +1,10 @@
+syntax = "proto3";
+package medequip.identity.v1;
+option csharp_namespace = "MedEquipSLA.Contracts.Grpc.Identity.V1";
+
+service AuthorizationLookup {
+  rpc CheckAccess (CheckAccessRequest) returns (CheckAccessReply);
+}
+
+message CheckAccessRequest {}
+message CheckAccessReply { bool is_current = 1; }

@@ -1,0 +1,15 @@
+**/bin
+**/obj
+**/node_modules
+**/dist
+.git
+.tools
+output
+**/TestResults
+**/*.log
+**/.vs
+.env
+.env.*
+.secrets
+**/*.pem
+**/*.pfx

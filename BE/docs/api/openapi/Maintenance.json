@@ -1,0 +1,1407 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "Maintenance.Api",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/reports/maintenance": {
+      "get": {
+        "tags": [
+          "Administrative reports"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "departmentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "untilUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedule-operations": {
+      "get": {
+        "tags": [
+          "Maintenance creation operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "equipment",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedule-operations/{id}": {
+      "get": {
+        "tags": [
+          "Maintenance creation operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedule-operations/{id}/cancel": {
+      "post": {
+        "tags": [
+          "Maintenance creation operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.SourceOperationEndpoints.Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedule-operations/{id}/retry": {
+      "post": {
+        "tags": [
+          "Maintenance creation operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.SourceOperationEndpoints.Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedules": {
+      "get": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.CreateSchedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Application.Features.Schedules.ScheduleDetail"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedules/{id}": {
+      "get": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.UpdateSchedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Application.Features.Schedules.ScheduleDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedules/{id}/end": {
+      "post": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.EndSchedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedules/{id}/end/retry-release": {
+      "post": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.EndSchedule"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/maintenance-schedules/{id}/occurrences": {
+      "get": {
+        "tags": [
+          "Maintenance schedules"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "Maintenance.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/maintenance/equipment/{id}": {
+      "get": {
+        "tags": [
+          "Maintenance.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/diagnostics/equipment-grpc": {
+      "get": {
+        "tags": [
+          "Maintenance.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/work-orders": {
+      "get": {
+        "tags": [
+          "Work orders"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}": {
+      "get": {
+        "tags": [
+          "Work orders"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/attempts": {
+      "get": {
+        "tags": [
+          "Work orders"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "notes",
+                  "photo",
+                  "result",
+                  "rowVersion"
+                ],
+                "type": "object",
+                "properties": {
+                  "notes": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "type": "string"
+                  },
+                  "rowVersion": {
+                    "type": "string"
+                  },
+                  "measurementsJson": {
+                    "type": "string"
+                  },
+                  "cost": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "currency": {
+                    "type": "string"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "notes": {
+                  "style": "form"
+                },
+                "result": {
+                  "style": "form"
+                },
+                "rowVersion": {
+                  "style": "form"
+                },
+                "measurementsJson": {
+                  "style": "form"
+                },
+                "cost": {
+                  "style": "form"
+                },
+                "currency": {
+                  "style": "form"
+                },
+                "photo": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/assignment": {
+      "put": {
+        "tags": [
+          "Work orders"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderEndpoints.Assignment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-order-operations": {
+      "get": {
+        "tags": [
+          "WorkOrder D3 operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "equipmentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-order-operations/{id}": {
+      "get": {
+        "tags": [
+          "WorkOrder D3 operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-order-operations/{id}/retry": {
+      "post": {
+        "tags": [
+          "WorkOrder D3 operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderOperationEndpoints.Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-order-operations/{id}/cancel": {
+      "post": {
+        "tags": [
+          "WorkOrder D3 operations"
+        ],
+        "description": " Authorization requirements (all apply): Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderOperationEndpoints.Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/progress": {
+      "post": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.ProgressInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/start": {
+      "post": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.VersionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/review": {
+      "post": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.ReviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/cancel": {
+      "post": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician; Admin.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.CancelInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/attempts/{attempt}/photo": {
+      "get": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "attempt",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/work-orders/{id}/attempts/{attempt}/measurements": {
+      "get": {
+        "tags": [
+          "WorkOrder execution"
+        ],
+        "description": " Authorization requirements (all apply): Admin or Technician.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "attempt",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MedEquipSLA.Maintenance.Api.ScheduleEndpoints.CreateSchedule": {
+        "type": "object",
+        "properties": {
+          "equipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "workType": {
+            "type": "string",
+            "nullable": true
+          },
+          "timing": {
+            "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.TimingInput"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.ScheduleEndpoints.EndSchedule": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.ScheduleEndpoints.TimingInput": {
+        "type": "object",
+        "properties": {
+          "anchorAtUtc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "intervalDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reminderLeadMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "completionWindowMinutes": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.ScheduleEndpoints.UpdateSchedule": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "timing": {
+            "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Api.ScheduleEndpoints.TimingInput"
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.SourceOperationEndpoints.Input": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderEndpoints.Assignment": {
+        "type": "object",
+        "properties": {
+          "technicianId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderOperationEndpoints.Input": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.CancelInput": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.ProgressInput": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.ReviewInput": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "accept": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Api.WorkOrderWorkflowEndpoints.VersionInput": {
+        "type": "object",
+        "properties": {
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Application.Features.Schedules.ScheduleDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "equipmentCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "equipmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "departmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "departmentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "workType": {
+            "type": "string",
+            "nullable": true
+          },
+          "timing": {
+            "$ref": "#/components/schemas/MedEquipSLA.Maintenance.Application.Features.Schedules.ScheduleTiming"
+          },
+          "nextOccurrenceAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rowVersion": {
+            "type": "string",
+            "format": "byte",
+            "nullable": true
+          },
+          "endedAtUtc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endedByUserId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "endReason": {
+            "type": "string",
+            "nullable": true
+          },
+          "registrationReleasedAtUtc": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MedEquipSLA.Maintenance.Application.Features.Schedules.ScheduleTiming": {
+        "type": "object",
+        "properties": {
+          "anchorAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "intervalDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reminderLeadMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completionWindowMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Microsoft.AspNetCore.Mvc.ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {}
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Paste the access token from Identity.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Administrative reports"
+    },
+    {
+      "name": "Maintenance creation operations"
+    },
+    {
+      "name": "Maintenance schedules"
+    },
+    {
+      "name": "Maintenance.Api"
+    },
+    {
+      "name": "Work orders"
+    },
+    {
+      "name": "WorkOrder execution"
+    },
+    {
+      "name": "WorkOrder D3 operations"
+    }
+  ]
+}

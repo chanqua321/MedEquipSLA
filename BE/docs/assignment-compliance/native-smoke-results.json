@@ -1,0 +1,72 @@
+[
+  {
+    "check": "Identity health/live",
+    "status": 200
+  },
+  {
+    "check": "Identity OpenAPI",
+    "status": 200
+  },
+  {
+    "check": "Equipment health/live",
+    "status": 200
+  },
+  {
+    "check": "Equipment OpenAPI",
+    "status": 200
+  },
+  {
+    "check": "Maintenance health/live",
+    "status": 200
+  },
+  {
+    "check": "Maintenance OpenAPI",
+    "status": 200
+  },
+  {
+    "check": "Incident health/live",
+    "status": 200
+  },
+  {
+    "check": "Incident OpenAPI",
+    "status": 200
+  },
+  {
+    "check": "Notification health/live",
+    "status": 200
+  },
+  {
+    "check": "Notification OpenAPI",
+    "status": 200
+  },
+  {
+    "check": "Gateway health/live",
+    "status": 200
+  },
+  {
+    "check": "5104 real gRPC client -> Equipment HTTP/2 probe",
+    "status": 200,
+    "body": {
+      "service": "Equipment",
+      "phase": "scaffold",
+      "businessLookupImplemented": false
+    }
+  },
+  {
+    "check": "5105 real gRPC client -> Equipment HTTP/2 probe",
+    "status": 200,
+    "body": {
+      "service": "Equipment",
+      "phase": "scaffold",
+      "businessLookupImplemented": false
+    }
+  },
+  {
+    "check": "Equipment resource rejects missing JWT",
+    "status": 401
+  },
+  {
+    "check": "Gateway proxies Equipment live endpoint",
+    "status": 200
+  }
+]

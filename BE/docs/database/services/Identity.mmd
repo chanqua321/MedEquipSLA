@@ -1,0 +1,61 @@
+erDiagram
+    AspNetUsers {
+        Guid Id PK "required"
+        string NormalizedEmail UK "optional"
+        string FullName "required"
+        Guid DepartmentId "optional; logical reference, no FK"
+        bool IsActive "required"
+        bigint AuthorizationVersion "required"
+        bytes RowVersion "required"
+    }
+    AspNetRoles {
+        Guid Id PK "required"
+        string Name "optional"
+        string NormalizedName UK "optional"
+        string ConcurrencyStamp "optional"
+    }
+    AspNetUserRoles {
+        Guid UserId PK,FK "required"
+        Guid RoleId PK,FK "required"
+    }
+    AspNetUserClaims {
+        int Id PK "required"
+        Guid UserId FK "required"
+        string ClaimType "optional"
+        string ClaimValue "optional"
+    }
+    AspNetRoleClaims {
+        int Id PK "required"
+        Guid RoleId FK "required"
+        string ClaimType "optional"
+        string ClaimValue "optional"
+    }
+    AspNetUserLogins {
+        string LoginProvider PK "required"
+        string ProviderKey PK "required"
+        string ProviderDisplayName "optional"
+        Guid UserId FK "required"
+    }
+    AspNetUserTokens {
+        Guid UserId PK,FK "required"
+        string LoginProvider PK "required"
+        string Name PK "required"
+        string Value "optional"
+    }
+    RefreshTokens {
+        Guid Id PK "required"
+        Guid UserId FK "required"
+        bytes TokenHash UK "required"
+        Guid FamilyId "required"
+        DateTimeOffset ExpiresAtUtc "required"
+        DateTimeOffset RevokedAtUtc "optional"
+        Guid ReplacedByTokenId FK,UK "optional"
+    }
+    AspNetUsers ||--o{ AspNetUserRoles : "UserId"
+    AspNetRoles ||--o{ AspNetUserRoles : "RoleId"
+    AspNetUsers ||--o{ AspNetUserClaims : "UserId"
+    AspNetRoles ||--o{ AspNetRoleClaims : "RoleId"
+    AspNetUsers ||--o{ AspNetUserLogins : "UserId"
+    AspNetUsers ||--o{ AspNetUserTokens : "UserId"
+    AspNetUsers ||--o{ RefreshTokens : "UserId"
+    RefreshTokens o|--o| RefreshTokens : "ReplacedByTokenId"
