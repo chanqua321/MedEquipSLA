@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Incident": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5105",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true",
+        "ConnectionStrings__Database": "Server=(localdb)\\MSSQLLocalDB;Database=MedEquip_Incident;Integrated Security=True;Encrypt=True;TrustServerCertificate=True"
+      },
+      "launchUrl": "swagger"
+    },
+    "Incident-SqlServer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5105",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Migrations__ApplyOnStartup": "true"
+      }
+    }
+  }
+}
