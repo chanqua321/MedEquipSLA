@@ -69,7 +69,7 @@ Remote dự kiến/đã đối chiếu: https://github.com/chanqua321/MedEquipSL
 - [src/Services/Equipment/README.md](../../src/Services/Equipment/README.md)
 - [src/Services/Identity/README.md](../../src/Services/Identity/README.md)
 - [src/Services/Incident/README.md](../../src/Services/Incident/README.md)
-- `src/Services/Maintenance/README.md` — verified after the Maintenance owner branch is integrated.
+- [src/Services/Maintenance/README.md](../../src/Services/Maintenance/README.md)
 - [src/Services/Notification/README.md](../../src/Services/Notification/README.md)
 
 Không sửa business source, protobuf, database model hoặc migrations trong lượt tài liệu này. Source addition chỉ là script kiểm tra tài liệu; CI gọi script đó. Các thay đổi Code First từ commit 9c4a46a được bảo toàn khi đưa nhánh lên main.

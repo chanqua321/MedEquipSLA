@@ -21,7 +21,7 @@ Script tạo RSA key và .env ngẫu nhiên nếu chưa có, không ghi đè c�
 |---|---|---|---|
 | Identity | 5101 | /identity | [Identity](src/Services/Identity/README.md) |
 | Equipment | 5102 | /equipment | [Equipment](src/Services/Equipment/README.md) |
-| Maintenance | 5104 | /maintenance | `src/Services/Maintenance/README.md` (available after the Maintenance owner branch is integrated) |
+| Maintenance | 5104 | /maintenance | [Maintenance](src/Services/Maintenance/README.md) |
 | Incident | 5105 | /incident | [Incident](src/Services/Incident/README.md) |
 | Notification | 5106 | /notification | [Notification](src/Services/Notification/README.md) |
 
