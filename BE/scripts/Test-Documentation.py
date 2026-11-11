@@ -13,6 +13,8 @@ import sys
 import unicodedata
 
 ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = Path(subprocess.check_output(
+    ['git', 'rev-parse', '--show-toplevel'], cwd=ROOT, encoding='utf-8').strip()).resolve()
 
 
 def git(*args, binary=False, stdin=None):
@@ -37,6 +39,12 @@ def anchors(path):
     return result
 
 
+def is_ignored(sample):
+    directory = REPO_ROOT if Path(sample).parts[0] in {'.github', '.vscode'} else ROOT
+    return subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample],
+                          cwd=directory, check=False).returncode == 0
+
+
 tracked = set(git('ls-files').splitlines())
 selected = sorted(set(git('ls-files', '--cached', '--others', '--exclude-standard').splitlines()))
 errors = []
@@ -55,7 +63,7 @@ for name in selected:
             continue  # Remote URLs and localhost endpoints are verified separately.
         link_count += 1
         destination = (path.parent / unquote(uri.path)).resolve() if uri.path else path
-        if not destination.is_relative_to(ROOT):
+        if not destination.is_relative_to(REPO_ROOT):
             errors.append(f'{name}: link escapes repository: {target}')
         elif not destination.exists():
             errors.append(f'{name}: missing link: {target}')
@@ -97,8 +105,7 @@ ignore_samples = [
     'tests/TestResults/out.trx', 'coverage/report.html', 'coverage.cobertura.xml',
     'runtime.log', 'scratch.tmp', 'Thumbs.db', '.DS_Store']
 for sample in ignore_samples:
-    result = subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=ROOT)
-    if result.returncode != 0:
+    if not is_ignored(sample):
         errors.append(f'ignore rule missing: {sample}')
 keep_samples = [
     '.env.example', '.env.development.example', 'README.md', 'docs/API-DOCUMENTATION.md',
@@ -108,7 +115,7 @@ keep_samples = [
     'src/Services/Equipment/Equipment.Api/Dockerfile', 'compose.yaml',
     '.github/workflows/ci.yml', '.vscode/extensions.json']
 for sample in keep_samples:
-    if subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=ROOT).returncode == 0:
+    if is_ignored(sample):
         errors.append(f'important source/sample is ignored: {sample}')
 
 history_count = 0

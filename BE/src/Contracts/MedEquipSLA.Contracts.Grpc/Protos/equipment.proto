@@ -1,0 +1,121 @@
+syntax = "proto3";
+package medequip.equipment.v1;
+option csharp_namespace = "MedEquipSLA.Contracts.Grpc.Equipment.V1";
+import "google/protobuf/timestamp.proto";
+service EquipmentLookup {
+  rpc AbortResourceUse (ResourceUseAbortRequest) returns (ResourceUseReply);
+  rpc ReleaseScheduleUse (ScheduleReleaseRequest) returns (ResourceUseReply);
+  rpc ListRetirementIntents (RetirementListRequest) returns (RetirementListReply);
+  rpc GetRetirementIntent (RetirementIntentQuery) returns (RetirementIntentReply);
+  rpc ReportRetirementSourceState (RetirementSourceReport) returns (RetirementIntentReply);
+  rpc ConfirmWorkOrderCommitted (WorkOrderCommitRequest) returns (WorkOrderRegistrationReply);
+  rpc VerifyAndAbortWorkOrderRegistration (WorkOrderAbortRequest) returns (WorkOrderRegistrationReply);
+  rpc RegisterWorkOrder (WorkOrderRegistrationRequest) returns (WorkOrderRegistrationReply);
+  rpc GetWorkOrderRegistrationByOperation (WorkOrderRegistrationQuery) returns (WorkOrderRegistrationReply);
+  rpc GetServiceInfo (ServiceInfoRequest) returns (ServiceInfoReply);
+  rpc GetEquipment (GetEquipmentRequest) returns (EquipmentReply);
+  rpc RegisterIncidentUse (RegisterIncidentUseRequest) returns (RegisterIncidentUseReply);
+  rpc RegisterScheduleUse (RegisterIncidentUseRequest) returns (RegisterIncidentUseReply);
+}
+message ResourceUseAbortRequest {
+  string equipment_id = 1;
+  string operation_id = 2;
+  string resource_type = 3;
+  bytes request_hash = 4;
+  string cancel_intent_id = 5;
+  int64 fencing_token = 6;
+  string correlation_id = 7;
+}
+message ScheduleReleaseRequest {
+  string equipment_id = 1;
+  string schedule_id = 2;
+  string registration_id = 3;
+  int64 source_version = 4;
+  string correlation_id = 5;
+}
+message ResourceUseReply {
+  string registration_id = 1;
+  string equipment_id = 2;
+  string operation_id = 3;
+  string state = 4;
+  int64 fencing_token = 5;
+  string cancel_intent_id = 6;
+  bytes request_hash = 7;
+  int64 source_version = 8;
+}
+message RetirementListRequest { int32 page = 1; }
+message RetirementListReply { repeated RetirementIntentReply intents = 1; }
+message RetirementIntentQuery { string equipment_id = 1; string intent_id = 2; }
+message RetirementIntentReply {
+  string equipment_id = 1;
+  string intent_id = 2;
+  int64 retirement_epoch = 3;
+  string state = 4;
+  int32 continue_count = 5;
+}
+message RetirementSourceReport {
+  string equipment_id = 1;
+  string intent_id = 2;
+  int64 retirement_epoch = 3;
+  int32 coverage_version = 4;
+  int64 source_gate_version = 5;
+  string source_state = 6;
+  string proof_id = 7;
+  string correlation_id = 8;
+}
+message WorkOrderRegistrationRequest {
+  string equipment_id = 1;
+  string schedule_id = 2;
+  string occurrence_id = 3;
+  string work_order_id = 4;
+  string operation_id = 5;
+  string work_type = 6;
+  google.protobuf.Timestamp scheduled_for_utc = 7;
+  google.protobuf.Timestamp due_at_utc = 8;
+  bytes request_hash = 9;
+  int64 fencing_token = 10;
+  string correlation_id = 11;
+}
+message WorkOrderCommitRequest {
+  WorkOrderRegistrationRequest registration = 1;
+  string registration_id = 2;
+  int64 source_version = 3;
+}
+message WorkOrderAbortRequest {
+  WorkOrderRegistrationRequest registration = 1;
+  string cancel_intent_id = 2;
+}
+message WorkOrderRegistrationQuery {
+  string equipment_id = 1;
+  string occurrence_id = 2;
+  string operation_id = 3;
+  bytes request_hash = 4;
+}
+message WorkOrderRegistrationReply {
+  bool found = 1;
+  string registration_id = 2;
+  string equipment_id = 3;
+  string occurrence_id = 4;
+  string operation_id = 5;
+  string state = 6;
+  int64 fencing_token = 7;
+  bytes request_hash = 8;
+  string equipment_code = 9;
+  string equipment_name = 10;
+  string department_id = 11;
+  string department_name = 12;
+  int64 source_version = 13;
+  string cancel_intent_id = 14;
+}
+message ServiceInfoRequest {}
+message ServiceInfoReply { string service = 1; string phase = 2; }
+message GetEquipmentRequest { string equipment_id = 1; }
+message RegisterIncidentUseRequest { string equipment_id = 1; string operation_id = 2; }
+message RegisterIncidentUseReply {
+  string registration_id = 1;
+  string equipment_code = 2;
+  string equipment_name = 3;
+  string department_id = 4;
+  string department_name = 5;
+}
+message EquipmentReply { string equipment_id = 1; string asset_code = 2; string department_id = 3; string status = 4; int64 aggregate_version = 5; }
