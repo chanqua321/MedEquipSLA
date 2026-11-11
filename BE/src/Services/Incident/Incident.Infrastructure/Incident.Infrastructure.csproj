@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../Incident.Application/Incident.Application.csproj" />
+    <ProjectReference Include="../../../Contracts/MedEquipSLA.Contracts.Events/MedEquipSLA.Contracts.Events.csproj" />
+    <ProjectReference Include="../../../Contracts/MedEquipSLA.Contracts.Grpc/MedEquipSLA.Contracts.Grpc.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+    <PackageReference Include="StackExchange.Redis" />
+    <PackageReference Include="Grpc.Net.ClientFactory" />
+  </ItemGroup>
+<ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App" /></ItemGroup>
+</Project>
