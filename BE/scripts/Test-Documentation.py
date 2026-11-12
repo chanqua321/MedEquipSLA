@@ -13,6 +13,10 @@ import sys
 import unicodedata
 
 ROOT = Path(__file__).resolve().parent.parent
+try:
+    REPO_ROOT = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], cwd=ROOT, text=True).strip())
+except Exception:
+    REPO_ROOT = ROOT
 
 
 def git(*args, binary=False, stdin=None):
@@ -55,7 +59,7 @@ for name in selected:
             continue  # Remote URLs and localhost endpoints are verified separately.
         link_count += 1
         destination = (path.parent / unquote(uri.path)).resolve() if uri.path else path
-        if not destination.is_relative_to(ROOT):
+        if not destination.is_relative_to(REPO_ROOT):
             errors.append(f'{name}: link escapes repository: {target}')
         elif not destination.exists():
             errors.append(f'{name}: missing link: {target}')

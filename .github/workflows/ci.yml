@@ -7,30 +7,36 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BE
     steps:
       - uses: actions/checkout@v4
       - run: python3 scripts/Test-Documentation.py
       - uses: actions/setup-dotnet@v4
         with:
-          global-json-file: global.json
+          global-json-file: BE/global.json
       - run: dotnet restore MedEquipSLA.sln --locked-mode
       - run: dotnet build MedEquipSLA.sln -c Release --no-restore
       - run: dotnet test MedEquipSLA.sln -c Release --no-build --no-restore
       - uses: actions/setup-node@v4
         with:
-          node-version-file: src/Web/.node-version
+          node-version-file: BE/src/Web/.node-version
           cache: npm
-          cache-dependency-path: src/Web/package-lock.json
+          cache-dependency-path: BE/src/Web/package-lock.json
       - run: npm ci && npm run build
-        working-directory: src/Web
+        working-directory: BE/src/Web
   database:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BE
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          global-json-file: global.json
+          global-json-file: BE/global.json
       - name: Start isolated SQL Server 2022
         shell: bash
         run: |
@@ -57,7 +63,7 @@ jobs:
         if: always()
         with:
           name: sqlserver-database-test-results
-          path: TestResults/*.trx
+          path: BE/TestResults/*.trx
           if-no-files-found: warn
       - name: Remove test container
         if: always()
