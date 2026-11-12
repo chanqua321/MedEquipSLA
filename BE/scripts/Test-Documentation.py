@@ -101,7 +101,7 @@ ignore_samples = [
     'tests/TestResults/out.trx', 'coverage/report.html', 'coverage.cobertura.xml',
     'runtime.log', 'scratch.tmp', 'Thumbs.db', '.DS_Store']
 for sample in ignore_samples:
-    result = subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=ROOT)
+    result = subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=REPO_ROOT)
     if result.returncode != 0:
         errors.append(f'ignore rule missing: {sample}')
 keep_samples = [
@@ -112,7 +112,7 @@ keep_samples = [
     'src/Services/Equipment/Equipment.Api/Dockerfile', 'compose.yaml',
     '.github/workflows/ci.yml', '.vscode/extensions.json']
 for sample in keep_samples:
-    if subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=ROOT).returncode == 0:
+    if subprocess.run(['git', 'check-ignore', '--no-index', '-q', sample], cwd=REPO_ROOT).returncode == 0:
         errors.append(f'important source/sample is ignored: {sample}')
 
 history_count = 0
